@@ -1,168 +1,188 @@
 .icon {
   background-image: url(../images/sprite.png);
 }
-.icon-cmb {
+.icon-hellobank {
   background-position: -0px -0px;
-  width: 48px;
-  height: 48px;
-}
-.icon-alloresto {
-  background-position: -0px -48px;
-  width: 48px;
-  height: 48px;
-}
-.icon-americanexpress {
-  background-position: -0px -96px;
-  width: 48px;
-  height: 48px;
-}
-.icon-axabanque {
-  background-position: -0px -144px;
-  width: 48px;
-  height: 48px;
-}
-.icon-banqueaccord {
-  background-position: -0px -192px;
-  width: 48px;
-  height: 48px;
-}
-.icon-banquepopulaire {
-  background-position: -0px -240px;
-  width: 48px;
-  height: 48px;
-}
-.icon-barclays {
-  background-position: -0px -288px;
-  width: 48px;
-  height: 48px;
-}
-.icon-bnporc {
-  background-position: -0px -336px;
-  width: 48px;
-  height: 48px;
-}
-.icon-boursorama {
-  background-position: -0px -384px;
-  width: 48px;
-  height: 48px;
-}
-.icon-bp {
-  background-position: -0px -432px;
-  width: 48px;
-  height: 48px;
-}
-.icon-bred {
-  background-position: -0px -480px;
-  width: 48px;
-  height: 48px;
-}
-.icon-caissedepargne {
-  background-position: -0px -528px;
-  width: 48px;
-  height: 48px;
-}
-.icon-carrefourbanque {
-  background-position: -0px -576px;
-  width: 48px;
-  height: 48px;
-}
-.icon-cic {
-  background-position: -0px -624px;
-  width: 48px;
-  height: 48px;
-}
-.icon-citelis {
-  background-position: -0px -672px;
-  width: 48px;
-  height: 48px;
-}
-.icon-citibank {
-  background-position: -0px -720px;
-  width: 48px;
-  height: 48px;
-}
-.icon-amazonstorecard {
-  background-position: -0px -768px;
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
 }
 .icon-cmso {
-  background-position: -0px -816px;
-  width: 48px;
-  height: 48px;
+  background-position: -0px -46px;
+  width: 66px;
+  height: 66px;
+}
+.icon-americanexpress {
+  background-position: -0px -112px;
+  width: 66px;
+  height: 66px;
+}
+.icon-apivie {
+  background-position: -0px -178px;
+  width: 66px;
+  height: 66px;
+}
+.icon-axabanque {
+  background-position: -0px -244px;
+  width: 66px;
+  height: 66px;
+}
+.icon-banqueaccord {
+  background-position: -0px -310px;
+  width: 66px;
+  height: 66px;
+}
+.icon-banquepopulaire {
+  background-position: -0px -376px;
+  width: 66px;
+  height: 66px;
+}
+.icon-barclays {
+  background-position: -0px -442px;
+  width: 66px;
+  height: 66px;
+}
+.icon-bnporc {
+  background-position: -0px -508px;
+  width: 66px;
+  height: 66px;
+}
+.icon-boursorama {
+  background-position: -0px -574px;
+  width: 66px;
+  height: 66px;
+}
+.icon-bp {
+  background-position: -0px -640px;
+  width: 66px;
+  height: 66px;
+}
+.icon-bred {
+  background-position: -0px -706px;
+  width: 66px;
+  height: 66px;
+}
+.icon-caissedepargne {
+  background-position: -0px -772px;
+  width: 66px;
+  height: 66px;
+}
+.icon-carrefourbanque {
+  background-position: -0px -838px;
+  width: 66px;
+  height: 66px;
+}
+.icon-cic {
+  background-position: -0px -904px;
+  width: 66px;
+  height: 66px;
+}
+.icon-citelis {
+  background-position: -0px -970px;
+  width: 66px;
+  height: 66px;
+}
+.icon-citibank {
+  background-position: -0px -1036px;
+  width: 66px;
+  height: 66px;
+}
+.icon-cmb {
+  background-position: -0px -1102px;
+  width: 66px;
+  height: 66px;
+}
+.icon-amazonstorecard {
+  background-position: -0px -1168px;
+  width: 66px;
+  height: 66px;
 }
 .icon-cragr {
-  background-position: -0px -864px;
-  width: 48px;
-  height: 48px;
+  background-position: -0px -1234px;
+  width: 66px;
+  height: 66px;
 }
 .icon-creditcooperatif {
-  background-position: -0px -912px;
-  width: 48px;
-  height: 48px;
+  background-position: -0px -1300px;
+  width: 66px;
+  height: 66px;
 }
 .icon-creditdunord {
-  background-position: -0px -960px;
-  width: 48px;
-  height: 48px;
+  background-position: -0px -1366px;
+  width: 66px;
+  height: 66px;
 }
 .icon-creditmutuel {
-  background-position: -0px -1008px;
-  width: 48px;
-  height: 48px;
+  background-position: -0px -1432px;
+  width: 66px;
+  height: 66px;
 }
 .icon-delubac {
-  background-position: -0px -1056px;
-  width: 48px;
-  height: 48px;
+  background-position: -0px -1498px;
+  width: 66px;
+  height: 66px;
 }
 .icon-fortuneo {
-  background-position: -0px -1104px;
-  width: 48px;
-  height: 48px;
+  background-position: -0px -1564px;
+  width: 66px;
+  height: 66px;
 }
 .icon-ganassurances {
-  background-position: -0px -1152px;
-  width: 48px;
-  height: 48px;
+  background-position: -0px -1630px;
+  width: 66px;
+  height: 66px;
 }
 .icon-groupamaes {
-  background-position: -0px -1200px;
-  width: 48px;
-  height: 48px;
+  background-position: -0px -1696px;
+  width: 66px;
+  height: 66px;
 }
-.icon-hellobank {
-  background-position: -0px -1248px;
-  width: 48px;
-  height: 48px;
+.icon-alloresto {
+  background-position: -0px -1762px;
+  width: 66px;
+  height: 66px;
 }
 .icon-hsbc {
-  background-position: -0px -1296px;
-  width: 48px;
-  height: 48px;
+  background-position: -0px -1828px;
+  width: 66px;
+  height: 66px;
 }
 .icon-ing {
-  background-position: -0px -1344px;
-  width: 48px;
-  height: 48px;
+  background-position: -0px -1894px;
+  width: 66px;
+  height: 66px;
+}
+.icon-kiwibank {
+  background-position: -0px -1960px;
+  width: 66px;
+  height: 66px;
 }
 .icon-lcl {
-  background-position: -0px -1392px;
-  width: 48px;
-  height: 48px;
+  background-position: -0px -2026px;
+  width: 66px;
+  height: 66px;
+}
+.icon-oney {
+  background-position: -0px -2092px;
+  width: 66px;
+  height: 66px;
 }
 .icon-paypal {
-  background-position: -0px -1440px;
-  width: 48px;
-  height: 48px;
+  background-position: -0px -2158px;
+  width: 66px;
+  height: 66px;
 }
 .icon-societegenerale {
-  background-position: -0px -1488px;
-  width: 48px;
-  height: 48px;
+  background-position: -0px -2224px;
+  width: 66px;
+  height: 66px;
+}
+.icon-vicseccard {
+  background-position: -0px -2290px;
+  width: 66px;
+  height: 66px;
 }
 .icon-wellsfargo {
-  background-position: -0px -1536px;
-  width: 48px;
-  height: 48px;
+  background-position: -0px -2356px;
+  width: 66px;
+  height: 66px;
 }
