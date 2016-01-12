@@ -4,6 +4,10 @@ from weboob.core.modules import ModuleLoadError
 
 import pkg_resources
 import json
+import os
+import shutil
+#def copy_icon(path):
+
 
 class ModuleManager(WebNip):
     def __init__(self):
@@ -20,14 +24,31 @@ class ModuleManager(WebNip):
             except ModuleLoadError:
                 continue
             if module.has_caps('CapBank'):
-                #Do not stop parsing the bank module if a module has bad config
-                try:
-                    formatted_module = self.format_kresus(module)
-                except ModuleError as e:
-                    print e.module
-                    continue
-                module_list.append(formatted_module)
+                module_list.append(module)
         return module_list
+
+    def format_list_modules(self):
+        module_list = self.list_bank_modules()
+        formatted_list = []
+        for module in module_list:
+            #Do not stop parsing the bank module if a module has bad config
+            try:
+                formatted_module = self.format_kresus(module)
+            except ModuleError as e:
+                print e.module
+                continue
+            formatted_list.append(formatted_module)
+        return formatted_list
+
+    def retrieve_module_icon(self):
+        module_list = self.list_bank_modules()
+        modules_path = pkg_resources.resource_filename('weboob_modules', '')
+        icon_name = 'favicon.png'
+        for module in module_list:
+            path = modules_path + '/' + module.name + '/' + icon_name
+            if os.path.isfile(path):
+                shutil.copyfile(path,'../static/images/banks/'+ module.name + '.png')
+
 
     def format_kresus(self, module):
         '''
@@ -102,5 +123,6 @@ class ModuleError(Exception):
         self.module = module_name
 
 module_manager=ModuleManager()
-content=module_manager.list_bank_modules()
-print json.dumps(content, ensure_ascii=False, indent=4, separators=(',', ': ')).encode('utf-8')
+module_manager.retrieve_module_icon()
+# content=module_manager.format_list_modules()
+# print json.dumps(content, ensure_ascii=False, indent=4, separators=(',', ': ')).encode('utf-8')
