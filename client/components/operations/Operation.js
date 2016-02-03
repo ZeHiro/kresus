@@ -20,6 +20,10 @@ export default class Operation extends React.Component {
         };
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.state.showDetails !== nextState.showDetails;
+    }
+
     toggleDetails(e) {
         this.setState({ showDetails: !this.state.showDetails });
         e.preventDefault();

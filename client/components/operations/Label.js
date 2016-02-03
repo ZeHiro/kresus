@@ -16,6 +16,10 @@ class LabelComponent extends React.Component {
         };
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.state.editMode !== nextState.editMode;
+    }
+
     buttonLabel() {
         assert(false, 'buttonLabel() must be implemented by the subclasses!');
     }

@@ -7,6 +7,10 @@ export default class DatePicker extends React.Component {
         this.pickadate = null;
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return false;
+    }
+
     componentDidMount() {
         this.pickadate = $(this.refs.elem.getDOMNode()).pickadate().pickadate('picker');
         this.pickadate.on('set', value => {

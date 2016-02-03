@@ -7,6 +7,11 @@ export default class SelectableButtonComponent extends React.Component {
         };
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.state.editMode !== nextState.editMode;
+    }
+
+
     dom() {
         return this.refs.select.getDOMNode();
     }

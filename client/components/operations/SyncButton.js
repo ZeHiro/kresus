@@ -12,6 +12,12 @@ export default class SyncButton extends React.Component {
         };
     }
 
+    shouldComponentUpdate(nextProps, nextState){
+        
+        return this.state.isSynchronizing !== nextState.isSynchronizing ||
+        this.props.account !== nextProps.account;
+    }
+
     onFetchOperations() {
         store.once(State.sync, this.afterFetchOperations.bind(this));
         Actions.fetchOperations();

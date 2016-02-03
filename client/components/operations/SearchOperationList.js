@@ -17,6 +17,10 @@ export default class SearchComponent extends React.Component {
         this.handleSyncCategory = this.handleSyncCategory.bind(this);
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.state.showDetails !== nextState.showDetails;
+    }
+
     initialState() {
         return {
             showDetails: false,
