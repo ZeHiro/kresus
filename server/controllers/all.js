@@ -7,6 +7,8 @@ import Operation     from '../models/operation';
 import OperationType from '../models/operationtype';
 import Config        from '../models/config';
 import Cozy          from '../models/cozyinstance';
+import Budget        from '../models/budget';
+import BudgetItem    from '../models/budgetitem';
 
 import { makeLogger, KError, asyncErr } from '../helpers';
 
@@ -24,6 +26,8 @@ async function getAllData() {
     ret.operations = await Operation.all();
     ret.operationtypes = await OperationType.all();
     ret.settings = await Config.all();
+    ret.budgets = await Budget.all();
+    ret.budgetitems = await BudgetItem.all();
     return ret;
 }
 

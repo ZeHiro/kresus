@@ -1,11 +1,13 @@
-import * as banks      from './banks';
-import * as accesses   from './accesses';
-import * as accounts   from './accounts';
-import * as operations from './operations';
-import * as alerts     from './alerts';
-import * as categories from './categories';
-import * as settings   from './settings';
-import * as all        from './all';
+import * as banks       from './banks';
+import * as accesses    from './accesses';
+import * as accounts    from './accounts';
+import * as operations  from './operations';
+import * as alerts      from './alerts';
+import * as categories  from './categories';
+import * as settings    from './settings';
+import * as all         from './all';
+import * as budgets     from './budgets';
+import * as budgetitems from './budgetitems';
 
 module.exports = {
 
@@ -107,5 +109,31 @@ module.exports = {
     'alerts/:alertId': {
         put: alerts.update,
         delete: alerts.destroy
+    },
+
+    // Budgets
+    'budgets': {
+        post: budgets.create
+    },
+    'budgetId': {
+        param: budgets.preloadBudget
+    },
+
+    /*
+    'budgets/:budgetId': {
+        put: budgets.update,
+        delete: budgets.delete
+    },
+    'budgets/:budgetId/addBudgetItem': {
+        put: budgets.addBudgetItem
+    }
+    */
+
+    // Budget Items
+    'budgetitems': {
+        post: budgetitems.create
+    },
+    'budgetItemId': {
+        param: budgetitems.preloadBudgetItem
     }
 };

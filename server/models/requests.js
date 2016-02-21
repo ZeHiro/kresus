@@ -65,5 +65,13 @@ module.exports = {
     operationtype: {
         all: americano.defaultRequests.all,
         byWeboobValue: allByWeboobValue
+    },
+
+    budget: {
+        all: americano.defaultRequests.all
+    },
+
+    budgetitem: {
+        all: americano.defaultRequests.all
     }
 };
