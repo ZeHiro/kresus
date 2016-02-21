@@ -12,6 +12,7 @@ import SimilarityComponent from './components/duplicates';
 import SettingsComponent from './components/settings';
 import AccountWizard from './components/init/account-wizard';
 import WeboobInstallReadme from './components/init/weboob-readme';
+import BudgetComponent from './components/budget';
 
 // Now this really begins.
 class Kresus extends React.Component {
@@ -60,6 +61,9 @@ class Kresus extends React.Component {
             case "settings":
                 mainComponent = <SettingsComponent/>;
                 break;
+            case 'budget':
+                mainComponent = <BudgetComponent/>;
+                break;
             default:
                 alert('unknown component to render: '  + showing + '!');
                 break;
@@ -94,6 +98,10 @@ class Kresus extends React.Component {
                             <li className={IsActive('reports')} onClick={this.show('reports')}>
                                 <i className="fa fa-briefcase"> </i>
                                 {$t('client.menu.reports')}
+                            </li>
+                            <li className={IsActive('budget')} onClick={ this.show('budget') }>
+                                <i className="fa fa-calculator"></i>
+                                { $t('client.menu.budget') }
                             </li>
                             <li className={IsActive('charts')} onClick={this.show('charts')}>
                                 <i className="fa fa-line-chart"> </i>

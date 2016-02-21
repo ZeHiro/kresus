@@ -85,7 +85,8 @@ module.exports = {
             settings: 'Préférences',
             similarities: 'Doublons',
             sublists: 'Comptes',
-            reports: 'Relevé'
+            reports: 'Relevé',
+            budget: 'Budget'
         },
 
         operations: {
@@ -350,6 +351,22 @@ module.exports = {
             labelMonthPrev: 'Mois précédent',
             labelMonthSelect: 'Sélectionner un mois',
             labelYearSelect: 'Sélectionner une année'
+        },
+
+        budget: {
+            title: 'Budget',
+            budget_title: 'Nom du budget',
+            start_date: 'Date du début',
+            end_date: 'Date de fin',
+            create_budget: 'Créer un budget',
+            budget_type: 'Type de budget',
+            types: {
+                unique: 'Unique',
+                weekly: 'Hebdomadaire',
+                monthly: 'Mensuel',
+                yearly: 'Annuel'
+            },
+            submit: 'Créer'
         }
     },
 

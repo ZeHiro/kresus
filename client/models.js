@@ -115,3 +115,14 @@ export class Alert {
         }
     }
 }
+
+export class Budget {
+    constructor(arg) {
+        this.id = has(arg, 'id') && arg.id;
+        this.title = has(arg, 'title') && arg.title;
+        this.startDate = has(arg, 'startDate') && new Date(arg.startDate);
+        this.endDate = maybeHas(arg, 'endDate') && new Date(arg.endDate) || null;
+        this.type = has(arg, 'type') && arg.budgetType;
+        this.budgetItems = maybeHas(arg, 'budgetItems') && arg.budgetItems || [];
+    }
+}

@@ -242,4 +242,16 @@ module.exports = {
             });
         })
     },
+
+    createBudget(budget) {
+        return new Promise((accept, reject) => {
+            $.ajax({
+                url: 'budgets/',
+                type: 'POST',
+                data: budget,
+                success: accept,
+                error: xhrReject(reject)
+            })
+        });
+    }
 };

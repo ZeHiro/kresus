@@ -3,7 +3,7 @@ import {EventEmitter as EE} from 'events';
 import {assert, debug, maybeHas, has, translate as $t, NONE_CATEGORY_ID,
         setupTranslator, localeComparator} from './helpers';
 
-import {Account, Alert, Bank, Category, Operation, OperationType} from './models';
+import {Account, Alert, Bank, Category, Operation, OperationType, Budget} from './models';
 
 import flux from './flux/dispatcher';
 
@@ -12,6 +12,8 @@ import backend from './backend';
 import { genericErrorHandler } from './errors';
 
 import DefaultSettings from '../shared/default-settings';
+
+import BudgetTypes from '../shared/budget-types.json';
 
 var events = new EE;
 
@@ -34,6 +36,8 @@ var data = {
     operationTypesLabel: new Map(), // Maps operation types to labels
 
     alerts: [],
+
+    budgets: [],
 
     /* Contains static information about banks (name/uuid) */
     StaticBanks: []
@@ -181,6 +185,12 @@ store.getAlerts = function(kind) {
     return res;
 }
 
+// [instanceof Budget]
+store.getBudgets = function() {
+    has(data, 'budgets');
+    return data.budgets;
+}
+
 // String
 store.getSetting = function(key) {
     let dict = data.settings;
@@ -200,6 +210,9 @@ store.isWeboobInstalled = function() {
     return store.getBoolSetting('weboob-installed');
 }
 
+store.getBudgetTypes = function() {
+    return BudgetTypes;
+};
 /*
  * BACKEND
  **/
@@ -297,6 +310,12 @@ store.setupKresus = function(cb) {
             assert(['balance', 'transaction', 'report'].indexOf(al.type) !== -1,
                    `unknown alert type: ${al.type}`);
             data.alerts.push(new Alert(al));
+        }
+
+        has(world, 'budgets');
+        data.budgets = [];
+        for (let budget of world.budgets) {
+            data.budgets.push(new Budget(budget));
         }
 
         cb && cb();
@@ -826,6 +845,17 @@ store.deleteAlert = function(al) {
     .catch(genericErrorHandler);
 }
 
+// Budgets
+store.createBudget = function(budget) {
+    backend.createBudget(budget).then(created => {
+        data.budgets.push(new Budget(created))
+        flux.dispatch({
+            type: Events.forward,
+            event: State.budgets
+        });
+    })
+    .catch(GenericErrorHandler);
+}
 /*
  * EVENTS
  */
@@ -839,6 +869,7 @@ var Events = {
         created_bank: 'the user submitted an access creation form',
         created_category: 'the user submitted a category creation form',
         created_operation: 'the user created an operation for an account',
+        created_budget: 'the user created a budget',
         deleted_account: 'the user clicked in order to delete an account',
         deleted_alert: 'the user clicked in order to delete an alert',
         deleted_bank: 'the user clicked in order to delete a bank',
@@ -868,6 +899,7 @@ var Events = {
 export let State = {
     alerts: 'alerts state changed',
     banks: 'banks state changed',
+    budgets: 'budgets state changed',
     accounts: 'accounts state changed',
     settings: 'settings state changed',
     operations: 'operations state changed',
@@ -1115,6 +1147,16 @@ export let Actions = {
             alert
         });
     },
+
+    // Budgets
+    createBudget(budget) {
+        assert(typeof budget === 'object');
+        // TODO add prop check for budget
+        flux.dispatch({
+            type: Events.user.created_budget,
+            budget
+        });
+    }
 };
 
 flux.register(function(action) {
@@ -1250,6 +1292,12 @@ flux.register(function(action) {
         store.updateWeboob();
         break;
 
+    case Events.user.created_budget:
+        has(action, 'budget');
+        store.createBudget(action.budget);
+        events.emit(State.budgets);
+        break;
+
       // Server events. Most of these events should be forward events, as the
       // logic on events is handled directly in backend callbacks.
       case Events.server.saved_bank:
@@ -1285,6 +1333,7 @@ flux.register(function(action) {
 function CheckEvent(event) {
     assert(event == State.alerts ||
            event == State.banks ||
+           event == State.budgets ||
            event == State.accounts ||
            event == State.settings ||
            event == State.operations ||
