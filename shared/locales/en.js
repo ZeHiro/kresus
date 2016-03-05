@@ -200,6 +200,8 @@ module.exports = {
             set_default_account: 'Set as default account',
             add_operation: 'Add an operation',
 
+            dispay_futures_operations: 'Display future operations',
+
             emails: {
                 invalid_limit: 'Limit value is invalid',
                 add_balance: 'Add a new balance notification',

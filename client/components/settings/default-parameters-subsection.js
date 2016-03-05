@@ -3,6 +3,7 @@ import { Actions, store } from '../../store';
 
 import OpCatChartPeriodSelect from '../shared/operations-by-category-period-select';
 import OpCatChartTypeSelect from '../shared/operations-by-category-type-select';
+import CheckBox from '../ui/checkbox';
 
 export default class DefaultParameters extends React.Component {
 
@@ -17,6 +18,7 @@ export default class DefaultParameters extends React.Component {
         this.handleDuplicateThresholdChange = this.handleDuplicateThresholdChange.bind(this);
         this.handleDefaultChartTypeChange = this.handleDefaultChartTypeChange.bind(this);
         this.handleDefaultChartPeriodChange = this.handleDefaultChartPeriodChange.bind(this);
+        this.handleChangeDisplayFutureOps = this.handleChangeDisplayFutureOps.bind(this);
     }
 
     handleDuplicateThresholdChange() {
@@ -46,15 +48,20 @@ export default class DefaultParameters extends React.Component {
         return true;
     }
 
+    handleChangeDisplayFutureOps(e) {
+        let newValue = e.target.checked;
+        Actions.changeBoolSetting('displayFutureOperations', newValue);
+    }
+
     render() {
         return (
-            <form className="form-horizontal">
+            <form >
                 <div className="top-panel panel panel-default">
                     <div className="panel-heading">
                         <h3 className="title panel-title">{ $t('client.similarity.title') }</h3>
                     </div>
 
-                    <div className="panel-body">
+                    <div className="panel-body form-horizontal">
                         <div className="form-group">
                             <label htmlFor="duplicateThreshold" className="col-xs-4 control-label">
                                { $t('client.settings.duplicate_threshold') }
@@ -81,10 +88,24 @@ export default class DefaultParameters extends React.Component {
 
                 <div className="top-panel panel panel-default">
                     <div className="panel-heading">
+                        <h3 className="title panel-title">{ $t('client.operations.title') }</h3>
+                    </div>
+
+                    <div className="panel-body form-horizontal">
+                        <CheckBox
+                          label={ $t('client.settings.dispay_futures_operations') }
+                          checked={ store.getBoolSetting('displayFutureOperations') }
+                          onChange={ this.handleChangeDisplayFutureOps }
+                        />
+                    </div>
+                </div>
+
+                <div className="top-panel panel panel-default">
+                    <div className="panel-heading">
                         <h3 className="title panel-title">{ $t('client.charts.title') }</h3>
                     </div>
 
-                    <div className="panel-body">
+                    <div className="panel-body form-horizontal">
                         <div className="form-group">
                             <label htmlFor="defaultChartType" className="col-xs-4 control-label">
                                 { $t('client.settings.default_chart_type') }
