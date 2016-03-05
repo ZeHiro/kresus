@@ -200,6 +200,8 @@ module.exports = {
             set_default_account: 'Définir comme compte par défaut',
             add_operation: 'Ajouter une opération',
 
+            dispay_futures_operations: 'Afficher les opérations futures',
+
             emails: {
                 invalid_limit: 'La valeur de seuil est invalide',
                 add_balance: 'Ajouter une notification sur le solde',
