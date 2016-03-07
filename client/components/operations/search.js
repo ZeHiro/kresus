@@ -1,46 +1,30 @@
 import { has, translate as $t } from '../../helpers';
+
 import { store } from '../../store';
 
 import DatePicker from '../ui/date-picker';
 
 export default class SearchComponent extends React.Component {
     constructor(props) {
+        has(props, 'searchObject');
+        has(props, 'updateSearchObject');
         super(props);
-        this.state = this.initialState();
+        this.state = {
+            showDetails: false
+        };
+
         this.handleToggleDetails = this.handleToggleDetails.bind(this);
-        this.handleSyncAmountHigh = this.handleSyncAmountHigh.bind(this);
-        this.handleSyncAmountLow = this.handleSyncAmountLow.bind(this);
-        this.handleChangeLowDate = this.handleChangeLowDate.bind(this);
-        this.handleChangeHighDate = this.handleChangeHighDate.bind(this);
+
+        this.handleSyncAmountHigh = this.updateSearchObjectUnique.bind(this, 'amountHigh');
+        this.handleSyncAmountLow = this.updateSearchObjectUnique.bind(this, 'amountLow');
+        this.handleChangeLowDate = this.updateSearchObjectDate.bind(this, 'lowDate');
+        this.handleChangeHighDate = this.updateSearchObjectDate.bind(this, 'highDate');
         this.handleSyncKeyword = this.handleSyncKeyword.bind(this);
-        this.handleSyncType = this.handleSyncType.bind(this);
-        this.handleSyncCategory = this.handleSyncCategory.bind(this);
+        this.handleSyncType = this.updateSearchObjectUnique.bind(this, 'type');
+        this.handleSyncCategory = this.updateSearchObjectUnique.bind(this, 'category');
 
         this.handleClearSearchNoClose = this.handleClearSearch.bind(this, false);
         this.handleClearSearchAndClose = this.handleClearSearch.bind(this, true);
-    }
-
-    initialState() {
-        return {
-            showDetails: false,
-
-            keywords: [],
-            category: '',
-            type: '',
-            amountLow: '',
-            amountHigh: '',
-            dateLow: null,
-            dateHigh: null
-        };
-    }
-
-    handleClearSearch(close, event) {
-        let initialState = this.initialState();
-        initialState.showDetails = !close;
-        this.setState(initialState, this.filter);
-        this.ref('searchForm').reset();
-
-        event.preventDefault();
     }
 
     handleToggleDetails() {
@@ -49,9 +33,11 @@ export default class SearchComponent extends React.Component {
         });
     }
 
-    componentDidMount() {
-        // Force search with empty query, to show all operations
-        this.filter();
+    handleClearSearch(close, event) {
+        this.setState({ showDetails: !close }, this.props.updateSearchObject({}));
+        this.ref('searchForm').reset();
+
+        event.preventDefault();
     }
 
     ref(name) {
@@ -59,106 +45,26 @@ export default class SearchComponent extends React.Component {
         return this.refs[name].getDOMNode();
     }
 
-    handleChangeLowDate(value) {
-        this.setState({
-            dateLow: value
-        }, this.filter);
+    handleSyncKeyword(e) {
+        let keywords = e.target.value.split(' ').map(w => w.toLowerCase());
+        let searchObject = this.props.searchObject;
+        searchObject.keywords = keywords;
+        this.props.updateSearchObject(searchObject);
     }
 
-    handleChangeHighDate(value) {
-        this.setState({
-            dateHigh: value
-        }, this.filter);
+    updateSearchObjectUnique(field, event) {
+        let value = event.target.value;
+        let searchObject = this.props.searchObject;
+        searchObject[field] = value;
+        this.props.updateSearchObject(searchObject);
     }
 
-    handleSyncKeyword() {
-        let kw = this.ref('keywords');
-        this.setState({
-            keywords: kw.value.split(' ').map(w => w.toLowerCase())
-        }, this.filter);
+    updateSearchObjectDate(field, value) {
+        let searchObject = this.props.searchObject;
+        searchObject[field] = value;
+        this.props.updateSearchObject(searchObject);
     }
 
-    handleSyncCategory() {
-        let cat = this.ref('cat');
-        this.setState({
-            category: cat.value
-        }, this.filter);
-    }
-
-    handleSyncType() {
-        let type = this.ref('type');
-        this.setState({
-            type: type.value
-        }, this.filter);
-    }
-
-    handleSyncAmountLow() {
-        let low = this.ref('amount_low');
-        this.setState({
-            amountLow: low.value
-        }, this.filter);
-    }
-
-    handleSyncAmountHigh() {
-        let high = this.ref('amount_high');
-        this.setState({
-            amountHigh: high.value
-        }, this.filter);
-    }
-
-    filter() {
-        function contains(where, substring) {
-            return where.toLowerCase().indexOf(substring) !== -1;
-        }
-
-        function filterIf(condition, array, callback) {
-            if (condition)
-                return array.filter(callback);
-            return array;
-        }
-
-        // Filter! Apply most discriminatory / easiest filters first
-        let operations = this.props.operations.slice();
-
-        let self = this;
-        operations = filterIf(this.state.category !== '', operations, op =>
-            op.categoryId === self.state.category
-        );
-
-        operations = filterIf(this.state.type !== '', operations, op =>
-            op.operationTypeID === self.state.type
-        );
-
-        operations = filterIf(this.state.amountLow !== '', operations, op =>
-            op.amount >= self.state.amountLow
-        );
-
-        operations = filterIf(this.state.amountHigh !== '', operations, op =>
-            op.amount <= self.state.amountHigh
-        );
-
-        operations = filterIf(this.state.dateLow !== null, operations, op =>
-            op.date >= self.state.dateLow
-        );
-
-        operations = filterIf(this.state.dateHigh !== null, operations, op =>
-            op.date <= self.state.dateHigh
-        );
-
-        operations = filterIf(this.state.keywords.length > 0, operations, op => {
-            for (let i = 0; i < self.state.keywords.length; i++) {
-                let str = self.state.keywords[i];
-                if (!contains(op.raw, str) &&
-                    !contains(op.title, str) &&
-                    (op.customLabel === null || !contains(op.customLabel, str))) {
-                    return false;
-                }
-            }
-            return true;
-        });
-
-        this.props.setFilteredOperations(operations);
-    }
 
     render() {
         let details;
@@ -197,7 +103,8 @@ export default class SearchComponent extends React.Component {
                         </label>
                         <input type="text" className="form-control"
                           onKeyUp={ this.handleSyncKeyword }
-                          defaultValue={ this.state.keywords.join(' ') }
+                          defaultValue={ this.props.searchObject.keywords ?
+                            this.props.searchObject.keywords.join(' ') : '' }
                           id="keywords" ref="keywords"
                         />
                     </div>
@@ -212,7 +119,7 @@ export default class SearchComponent extends React.Component {
                             <div className="col-xs-5">
                                 <select className="form-control" id="category-selector"
                                   onChange={ this.handleSyncCategory }
-                                  defaultValue={ this.state.category }
+                                  defaultValue={ this.props.searchObject.category || '' }
                                   ref="cat">
                                     { catOptions }
                                 </select>
@@ -225,7 +132,7 @@ export default class SearchComponent extends React.Component {
                             <div className="col-xs-4">
                                 <select className="form-control" id="type-selector"
                                   onChange={ this.handleSyncType }
-                                  defaultValue={ this.state.type }
+                                  defaultValue={ this.props.searchObject.type || '' }
                                   ref="type">
                                     { typeOptions }
                                 </select>
@@ -243,7 +150,7 @@ export default class SearchComponent extends React.Component {
                             <div className="col-xs-5">
                                 <input type="number" className="form-control"
                                   onChange={ this.handleSyncAmountLow }
-                                  defaultValue={ this.state.amountLow }
+                                  defaultValue={ this.props.searchObject.amountLow || '' }
                                   id="amount-low"ref="amount_low"
                                 />
                             </div>
@@ -255,7 +162,7 @@ export default class SearchComponent extends React.Component {
                             <div className="col-xs-4">
                                 <input type="number" className="form-control"
                                   onChange={ this.handleSyncAmountHigh }
-                                  defaultValue={ this.state.amountHigh }
+                                  defaultValue={ this.props.searchObject.amountHigh || '' }
                                   id="amount-high" ref="amount_high"
                                 />
                             </div>
@@ -275,7 +182,7 @@ export default class SearchComponent extends React.Component {
                                   id="date-low"
                                   key="date-low"
                                   onSelect={ this.handleChangeLowDate }
-                                  maxDate={ this.state.dateHigh }
+                                  maxDate={ this.props.searchObject.dateHigh || '' }
                                 />
                             </div>
                             <div className="col-xs-1">
@@ -289,7 +196,7 @@ export default class SearchComponent extends React.Component {
                                   id="date-high"
                                   key="date-high"
                                   onSelect={ this.handleChangeHighDate }
-                                  minDate={ this.state.dateLow }
+                                  minDate={ this.props.searchObject.dateLow || '' }
                                 />
                             </div>
                         </div>
@@ -324,6 +231,5 @@ export default class SearchComponent extends React.Component {
                 { details }
             </div>
         );
-
     }
 }

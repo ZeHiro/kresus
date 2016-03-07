@@ -1,4 +1,4 @@
-import { translate as $t } from '../../helpers';
+import { maybeHas, translate as $t } from '../../helpers';
 import { store, State } from '../../store';
 
 import { AmountWell, FilteredAmountWell } from './amount-well';
@@ -29,23 +29,22 @@ export default class OperationsComponent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            account: store.getCurrentAccount(),
-            operations: store.getCurrentOperations(),
-            filteredOperations: [],
-            lastItemShown: SHOW_ITEMS_INITIAL,
-            hasFilteredOperations: false
+            searchObject: {},
+            lastItemShown: SHOW_ITEMS_INITIAL
         };
         this.showMoreTimer = null;
         this.listener = this._listener.bind(this);
-        this.setFilteredOperations = this.setFilteredOperations.bind(this);
+        this.updateSearchObject = this.updateSearchObject.bind(this);
     }
 
     _listener() {
         this.setState({
-            account: store.getCurrentAccount(),
-            operations: store.getCurrentOperations(),
             lastItemShown: SHOW_ITEMS_INITIAL
-        }, () => this.refs.search.filter());
+        });
+    }
+
+    updateSearchObject(searchObject) {
+        this.setState({ searchObject });
     }
 
     componentDidMount() {
@@ -65,22 +64,57 @@ export default class OperationsComponent extends React.Component {
         }
     }
 
-    setFilteredOperations(operations) {
-        this.setState({
-            filteredOperations: operations,
-            hasFilteredOperations: operations.length < this.state.operations.length,
-            lastItemShown: SHOW_ITEMS_INITIAL
-        });
-    }
+    filter(operation, searchObject) {
 
-    render() {
-
-        // Edge case: the component hasn't retrieved the account yet.
-        if (this.state.account === null) {
-            return <div/>;
+        function contains(where, substring) {
+            return where.toLowerCase().indexOf(substring) !== -1;
         }
 
-        let ops = this.state.filteredOperations
+        if (maybeHas(searchObject, 'category') && searchObject.category  && operation.categoryId !== searchObject.category) {
+            return false;
+        }
+
+        if (maybeHas(searchObject, 'type') && searchObject.type  && operation.operationTypeID !== searchObject.type) {
+            return false;
+        }
+
+        if (maybeHas(searchObject, 'amountHigh') && searchObject.amountHigh && operation.amount > searchObject.amountHigh) {
+            return false;
+        }
+
+        if (maybeHas(searchObject, 'amountLow') && searchObject.amountLow && operation.amount < searchObject.amountLow) {
+            return false;
+        }
+
+        if (maybeHas(searchObject, 'lowDate') && searchObject.lowDate && new Date(operation.date) < new Date(searchObject.lowDate)) {
+            return false;
+        }
+
+        if (maybeHas(searchObject, 'highDate') && searchObject.highDate && new Date(operation.date) > new Date(searchObject.highDate)) {
+            return false;
+        }
+
+        if (maybeHas(searchObject, 'keywords') && searchObject.keywords) {
+            for (let keyword of searchObject.keywords) {
+                if (!contains(operation.raw, keyword) &&
+                    !contains(operation.title, keyword) &&
+                    (operation.customLabel === null || !contains(operation.customLabel, keyword))) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+
+    render() {
+        let currentAccount = store.getCurrentAccount();
+        let operations = store.getCurrentOperations();
+        let filteredOperations = operations.filter(op => this.filter(op, this.state.searchObject));
+        let hasFilteredOperations = filteredOperations.length < operations.length;
+
+        let ops = filteredOperations
                     .filter((op, i) => i <= this.state.lastItemShown)
                     .map(o => <Operation key={ o.id } operation={ o } />);
 
@@ -92,7 +126,7 @@ export default class OperationsComponent extends React.Component {
 
             this.showMoreTimer = setTimeout(() => {
                 let newLastItemShown = Math.min(this.state.lastItemShown + SHOW_ITEMS_MORE,
-                                                this.state.filteredOperations.length);
+                                                filteredOperations.length);
                 if (newLastItemShown > this.state.lastItemShown) {
                     this.setState({
                         lastItemShown: newLastItemShown
@@ -104,7 +138,7 @@ export default class OperationsComponent extends React.Component {
         maybeShowMore();
 
         let asOf = $t('client.operations.as_of');
-        let lastCheckedDate = new Date(this.state.account.lastChecked).toLocaleDateString();
+        let lastCheckedDate = new Date(currentAccount.lastChecked).toLocaleDateString();
         let lastCheckDate = `${asOf} ${lastCheckedDate}`;
 
         return (
@@ -117,8 +151,8 @@ export default class OperationsComponent extends React.Component {
                       icon="balance-scale"
                       title={ $t('client.operations.current_balance') }
                       subtitle={ lastCheckDate }
-                      operations={ this.state.operations }
-                      initialAmount={ this.state.account.initialAmount }
+                      operations={ operations }
+                      initialAmount={ currentAccount.initialAmount }
                       filterFunction={ noFilter }
                     />
 
@@ -127,9 +161,9 @@ export default class OperationsComponent extends React.Component {
                       backgroundColor="background-green"
                       icon="arrow-down"
                       title={ $t('client.operations.received') }
-                      hasFilteredOperations={ this.state.hasFilteredOperations }
-                      operations={ this.state.operations }
-                      filteredOperations={ this.state.filteredOperations }
+                      hasFilteredOperations={ hasFilteredOperations }
+                      operations={ operations }
+                      filteredOperations={ filteredOperations }
                       initialAmount={ 0 }
                       filterFunction={ isPositive }
                     />
@@ -139,9 +173,9 @@ export default class OperationsComponent extends React.Component {
                       backgroundColor="background-orange"
                       icon="arrow-up"
                       title={ $t('client.operations.spent') }
-                      hasFilteredOperations={ this.state.hasFilteredOperations }
-                      operations={ this.state.operations }
-                      filteredOperations={ this.state.filteredOperations }
+                      hasFilteredOperations={ hasFilteredOperations }
+                      operations={ operations }
+                      filteredOperations={ filteredOperations }
                       initialAmount={ 0 }
                       filterFunction={ isNegative }
                     />
@@ -151,9 +185,9 @@ export default class OperationsComponent extends React.Component {
                       backgroundColor="background-darkblue"
                       icon="database"
                       title={ $t('client.operations.saved') }
-                      hasFilteredOperations={ this.state.hasFilteredOperations }
-                      operations={ this.state.operations }
-                      filteredOperations={ this.state.filteredOperations }
+                      hasFilteredOperations={ hasFilteredOperations }
+                      operations={ operations }
+                      filteredOperations={ filteredOperations }
                       initialAmount={ 0 }
                       filterFunction={ noFilter }
                     />
@@ -164,13 +198,14 @@ export default class OperationsComponent extends React.Component {
                         <h3 className="title panel-title">
                             { $t('client.operations.title') }
                         </h3>
-                        <SyncButton account={ this.state.account } />
+                        <SyncButton account={ currentAccount } />
                     </div>
 
                     <div className="panel-body">
                         <SearchComponent
-                          setFilteredOperations={ this.setFilteredOperations }
-                          operations={ this.state.operations } ref="search"
+                          updateSearchObject = { this.updateSearchObject }
+                          searchObject = { this.state.searchObject }
+                          ref="search"
                         />
                     </div>
 
