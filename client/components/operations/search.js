@@ -34,7 +34,8 @@ export default class SearchComponent extends React.Component {
     }
 
     handleClearSearch(close, event) {
-        this.setState({ showDetails: !close }, this.props.updateSearchObject({}));
+        this.props.updateSearchObject({});
+        this.setState({ showDetails: !close });
         this.ref('searchForm').reset();
 
         event.preventDefault();
@@ -182,7 +183,7 @@ export default class SearchComponent extends React.Component {
                                   id="date-low"
                                   key="date-low"
                                   onSelect={ this.handleChangeLowDate }
-                                  maxDate={ this.props.searchObject.dateHigh || '' }
+                                  maxDate={ this.props.searchObject.highDate || '' }
                                 />
                             </div>
                             <div className="col-xs-1">
@@ -196,7 +197,7 @@ export default class SearchComponent extends React.Component {
                                   id="date-high"
                                   key="date-high"
                                   onSelect={ this.handleChangeHighDate }
-                                  minDate={ this.props.searchObject.dateLow || '' }
+                                  minDate={ this.props.searchObject.lowDate || '' }
                                 />
                             </div>
                         </div>

@@ -1,5 +1,6 @@
 import { maybeHas, translate as $t } from '../../helpers';
 import { store, State } from '../../store';
+import filter from '../../../shared/lib/filter_operation';
 
 import { AmountWell, FilteredAmountWell } from './amount-well';
 import SearchComponent from './search';
@@ -64,54 +65,10 @@ export default class OperationsComponent extends React.Component {
         }
     }
 
-    filter(operation, searchObject) {
-
-        function contains(where, substring) {
-            return where.toLowerCase().indexOf(substring) !== -1;
-        }
-
-        if (maybeHas(searchObject, 'category') && searchObject.category  && operation.categoryId !== searchObject.category) {
-            return false;
-        }
-
-        if (maybeHas(searchObject, 'type') && searchObject.type  && operation.operationTypeID !== searchObject.type) {
-            return false;
-        }
-
-        if (maybeHas(searchObject, 'amountHigh') && searchObject.amountHigh && operation.amount > searchObject.amountHigh) {
-            return false;
-        }
-
-        if (maybeHas(searchObject, 'amountLow') && searchObject.amountLow && operation.amount < searchObject.amountLow) {
-            return false;
-        }
-
-        if (maybeHas(searchObject, 'lowDate') && searchObject.lowDate && new Date(operation.date) < new Date(searchObject.lowDate)) {
-            return false;
-        }
-
-        if (maybeHas(searchObject, 'highDate') && searchObject.highDate && new Date(operation.date) > new Date(searchObject.highDate)) {
-            return false;
-        }
-
-        if (maybeHas(searchObject, 'keywords') && searchObject.keywords) {
-            for (let keyword of searchObject.keywords) {
-                if (!contains(operation.raw, keyword) &&
-                    !contains(operation.title, keyword) &&
-                    (operation.customLabel === null || !contains(operation.customLabel, keyword))) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-
     render() {
         let currentAccount = store.getCurrentAccount();
         let operations = store.getCurrentOperations();
-        let filteredOperations = operations.filter(op => this.filter(op, this.state.searchObject));
+        let filteredOperations = operations.filter(op => filter(op, this.state.searchObject));
         let hasFilteredOperations = filteredOperations.length < operations.length;
 
         let ops = filteredOperations
