@@ -1,5 +1,6 @@
 import { has, translate as $t } from '../../helpers';
 import { store } from '../../store';
+import filter from '../../../shared/lib/filter_operation';
 
 import DatePicker from '../ui/date-picker';
 
@@ -8,16 +9,37 @@ export default class SearchComponent extends React.Component {
         super(props);
         this.state = this.initialState();
         this.handleToggleDetails = this.handleToggleDetails.bind(this);
-        this.handleSyncAmountHigh = this.handleSyncAmountHigh.bind(this);
-        this.handleSyncAmountLow = this.handleSyncAmountLow.bind(this);
-        this.handleChangeLowDate = this.handleChangeLowDate.bind(this);
-        this.handleChangeHighDate = this.handleChangeHighDate.bind(this);
+
+        this.handleSyncAmountHigh = this.updateSearchObjectUnique.bind(this, 'amountHigh');
+        this.handleSyncAmountLow = this.updateSearchObjectUnique.bind(this, 'amountLow');
+        this.handleChangeLowDate = this.updateSearchObjectDate.bind(this, 'lowDate');
+        this.handleChangeHighDate = this.updateSearchObjectDate.bind(this, 'highDate');
         this.handleSyncKeyword = this.handleSyncKeyword.bind(this);
-        this.handleSyncType = this.handleSyncType.bind(this);
-        this.handleSyncCategory = this.handleSyncCategory.bind(this);
+        this.handleSyncType = this.updateSearchObjectUnique.bind(this, 'type');
+        this.handleSyncCategory = this.updateSearchObjectUnique.bind(this, 'category');
 
         this.handleClearSearchNoClose = this.handleClearSearch.bind(this, false);
         this.handleClearSearchAndClose = this.handleClearSearch.bind(this, true);
+    }
+
+    handleSyncKeyword(event) {
+        let keywords = event.target.value.split(' ').map(w => w.toLowerCase());
+        this.setState({ keywords: keywords }, this.filter);
+        event.preventDefault();
+    }
+
+    updateSearchObjectUnique(field, event) {
+        let value = event.target.value;
+        let searchObject = {};
+        searchObject[field] = value;
+        this.setState(searchObject, this.filter);
+        event.preventDefault();
+    }
+
+    updateSearchObjectDate(field, value) {
+        let searchObject = {};
+        searchObject[field] = value;
+        this.setState(searchObject, this.filter);
     }
 
     initialState() {
@@ -32,6 +54,10 @@ export default class SearchComponent extends React.Component {
             dateLow: null,
             dateHigh: null
         };
+    }
+
+    filterOperation(operation) {
+        filter(operation, this.state);
     }
 
     handleClearSearch(close, event) {
@@ -59,105 +85,8 @@ export default class SearchComponent extends React.Component {
         return this.refs[name].getDOMNode();
     }
 
-    handleChangeLowDate(value) {
-        this.setState({
-            dateLow: value
-        }, this.filter);
-    }
-
-    handleChangeHighDate(value) {
-        this.setState({
-            dateHigh: value
-        }, this.filter);
-    }
-
-    handleSyncKeyword() {
-        let kw = this.ref('keywords');
-        this.setState({
-            keywords: kw.value.split(' ').map(w => w.toLowerCase())
-        }, this.filter);
-    }
-
-    handleSyncCategory() {
-        let cat = this.ref('cat');
-        this.setState({
-            category: cat.value
-        }, this.filter);
-    }
-
-    handleSyncType() {
-        let type = this.ref('type');
-        this.setState({
-            type: type.value
-        }, this.filter);
-    }
-
-    handleSyncAmountLow() {
-        let low = this.ref('amount_low');
-        this.setState({
-            amountLow: low.value
-        }, this.filter);
-    }
-
-    handleSyncAmountHigh() {
-        let high = this.ref('amount_high');
-        this.setState({
-            amountHigh: high.value
-        }, this.filter);
-    }
-
     filter() {
-        function contains(where, substring) {
-            return where.toLowerCase().indexOf(substring) !== -1;
-        }
-
-        function filterIf(condition, array, callback) {
-            if (condition)
-                return array.filter(callback);
-            return array;
-        }
-
-        // Filter! Apply most discriminatory / easiest filters first
-        let operations = this.props.operations.slice();
-
-        let self = this;
-        operations = filterIf(this.state.category !== '', operations, op =>
-            op.categoryId === self.state.category
-        );
-
-        operations = filterIf(this.state.type !== '', operations, op =>
-            op.operationTypeID === self.state.type
-        );
-
-        operations = filterIf(this.state.amountLow !== '', operations, op =>
-            op.amount >= self.state.amountLow
-        );
-
-        operations = filterIf(this.state.amountHigh !== '', operations, op =>
-            op.amount <= self.state.amountHigh
-        );
-
-        operations = filterIf(this.state.dateLow !== null, operations, op =>
-            op.date >= self.state.dateLow
-        );
-
-        operations = filterIf(this.state.dateHigh !== null, operations, op =>
-            op.date <= self.state.dateHigh
-        );
-
-        operations = filterIf(this.state.keywords.length > 0, operations, op => {
-            for (let i = 0; i < self.state.keywords.length; i++) {
-                let str = self.state.keywords[i];
-                if (!contains(op.raw, str) &&
-                    !contains(op.title, str) &&
-                    (op.customLabel === null || !contains(op.customLabel, str))) {
-                    return false;
-                }
-            }
-            return true;
-        });
-
-        this.props.setFilteredOperations(operations);
+        this.props.setFilteredOperations(this.props.operations.filter(op => filter(op, this.state)));
     }
 
     render() {
