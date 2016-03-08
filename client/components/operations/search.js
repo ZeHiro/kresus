@@ -24,7 +24,7 @@ export default class SearchComponent extends React.Component {
 
     handleSyncKeyword(event) {
         let keywords = event.target.value.split(' ').map(w => w.toLowerCase());
-        this.setState({ keywords: keywords }, this.filter);
+        this.setState({ keywords }, this.filter);
         event.preventDefault();
     }
 
@@ -86,7 +86,9 @@ export default class SearchComponent extends React.Component {
     }
 
     filter() {
-        this.props.setFilteredOperations(this.props.operations.filter(op => filter(op, this.state)));
+        this.props.setFilteredOperations(
+            this.props.operations.filter(op => filter(op, this.state))
+        );
     }
 
     render() {

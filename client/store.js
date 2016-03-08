@@ -195,7 +195,9 @@ store.getCurrentOperations = function() {
     let acc = this.getCurrentAccount();
     if (acc === null)
         return [];
-    return acc.operations;
+    return acc.operations.filter(op =>
+        !op.isFuture || store.getBoolSetting('displayFutureOperations')
+    );
 };
 
 // [instanceof Category]

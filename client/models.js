@@ -54,6 +54,7 @@ export class Operation {
         this.operationTypeID = (maybeHas(arg, 'operationTypeID') && arg.operationTypeID) ||
                                unknownTypeId;
         this.customLabel     = (maybeHas(arg, 'customLabel') && arg.customLabel) || null;
+        this.isFuture        = this.date > Date.now();
     }
 }
 

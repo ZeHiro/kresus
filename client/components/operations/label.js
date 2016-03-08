@@ -130,7 +130,7 @@ export class DetailedViewLabel extends LabelComponent {
 export class OperationListViewLabel extends LabelComponent {
     constructor(props) {
         has(props, 'operation');
-        has(props, 'link');
+        has(props, 'maybeIcon');
         super(props);
     }
 
@@ -143,12 +143,12 @@ export class OperationListViewLabel extends LabelComponent {
     }
 
     render() {
-        if (typeof this.props.link === 'undefined') {
+        if (typeof this.props.maybeIcon === 'undefined') {
             return super.render();
         }
         return (
             <div className="input-group">
-                { this.props.link }
+                { this.props.maybeIcon }
                 { super.render() }
             </div>
         );

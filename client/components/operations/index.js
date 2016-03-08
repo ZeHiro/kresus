@@ -52,12 +52,14 @@ export default class OperationsComponent extends React.Component {
         store.on(State.banks, this.listener);
         store.on(State.accounts, this.listener);
         store.on(State.operations, this.listener);
+        store.on(State.settings, this.listener);
     }
 
     componentWillUnmount() {
         store.removeListener(State.banks, this.listener);
         store.removeListener(State.operations, this.listener);
         store.removeListener(State.accounts, this.listener);
+        store.removeListener(State.settings, this.listener);
 
         if (this.showMoreTimer) {
             clearTimeout(this.showMoreTimer);

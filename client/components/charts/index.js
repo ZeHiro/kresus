@@ -177,8 +177,10 @@ export function createChartBalance(chartId, account, operations) {
     let firstDate = ops.length ? +ops[0].date : Date.now();
     firstDate = (firstDate / DAY | 0) * DAY;
 
-    let today = (Date.now() / DAY | 0) * DAY;
-    for (; firstDate <= today; firstDate += DAY) {
+    let lastDate = store.getBoolSetting('displayFutureOperations') ?
+        (Math.max(+Date.now(), +ops[ops.length - 1].date) / DAY | 0) * DAY :
+        (Date.now() / DAY | 0) * DAY;
+    for (; firstDate <= lastDate; firstDate += DAY) {
         opmap.set(makeKey(new Date(firstDate)), 0);
     }
 
@@ -361,6 +363,8 @@ export default class ChartsComponent extends React.Component {
         store.on(State.categories, this.reload);
 
         store.on(State.operations, this.reload);
+
+        store.on(State.settings, this.reload);
     }
 
     componentWillUnmount() {
@@ -368,6 +372,7 @@ export default class ChartsComponent extends React.Component {
         store.removeListener(State.accounts, this.reload);
         store.removeListener(State.operations, this.reload);
         store.removeListener(State.categories, this.reload);
+        store.removeListener(State.settings, this.reload);
     }
 
     changeKind(kind) {

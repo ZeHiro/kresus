@@ -49,6 +49,15 @@ export default class Operation extends React.Component {
             );
         }
 
+        // Add an icon if the operation is a future operation
+        let futureIcon = (
+            op.isFuture ?
+                <i className = "fa fa-hourglass-start"
+                  aria-label="Future operation"
+                  title={ $t('client.operations.future_operation') } ></i> :
+                ''
+            );
+
         // Add a link to the attached file, if there is any.
         let link;
         if (op.binary !== null) {
@@ -67,6 +76,15 @@ export default class Operation extends React.Component {
                     <span className="glyphicon glyphicon-link"></span>
                     { $t(`client.${op.attachments.linkTranslationKey}`) }
                 </a>
+            );
+        }
+
+        let maybeIcon;
+        if (link || futureIcon) {
+            maybeIcon = (
+                <label htmlFor={ op.id } className="input-group-addon box-transparent">
+                    { futureIcon }{ link }
+                </label>
             );
         }
 
@@ -90,7 +108,7 @@ export default class Operation extends React.Component {
                       onSelectId={ this.handleSelectType }
                     />
                 </td>
-                <td><OperationListViewLabel operation={ op } link={ link } /></td>
+                <td><OperationListViewLabel operation={ op } maybeIcon={ maybeIcon } /></td>
                 <td>{ op.amount }</td>
                 <td>
                     <CategorySelect
