@@ -37,6 +37,8 @@ const data = {
 
     alerts: [],
 
+    search: {},
+
     // Contains static information about banks (name/uuid)
     StaticBanks: []
 };
@@ -69,6 +71,7 @@ const Events = {
         updatedOperationCategory: 'the user changed the category of an operation',
         updatedOperationType: 'the user changed the type of an operation',
         updatedOperationCustomLabel: 'the user updated the label of  an operation',
+        updateSearch: 'the user updated the search form',
         updatedWeboob: 'the user asked to update weboob modules'
     },
     // Events emitted in an event loop: xhr callback, setTimeout/setInterval etc.
@@ -87,7 +90,8 @@ export const State = {
     operations: 'operations state changed',
     categories: 'categories state changed',
     weboob: 'weboob state changed',
-    sync: 'sync state changed'
+    sync: 'sync state changed',
+    search: 'search state update'
 };
 
 // Holds the current bank information
@@ -232,6 +236,10 @@ store.getAlerts = function(kind) {
     }
     return res;
 };
+
+store.getSearch = function() {
+    return data.search;
+}
 
 // String
 store.getSetting = function(key) {
@@ -909,6 +917,11 @@ store.deleteAlert = function(al) {
     .catch(genericErrorHandler);
 };
 
+store.updateSearch = function (field, value) {
+    data.search[field] = value;
+    events.emit(State.search);
+}
+
 /*
  * ACTIONS
  **/
@@ -1151,6 +1164,17 @@ export let Actions = {
             alert
         });
     },
+
+    updateSearch(field, value) {
+        if (!flux.isDispatching()){
+        flux.dispatch({
+            type: Events.user.updateSearch,
+            field,
+            value
+        });
+        }
+    }
+    
 };
 
 function makeForwardEvent(event) {
@@ -1294,6 +1318,11 @@ flux.register(action => {
 
         case Events.user.updatedWeboob:
             store.updateWeboob();
+            break;
+
+        case Events.user.updateSearch: 
+            has(action, 'searchObject');
+            store.updateSearch(action.field, action.value);
             break;
 
         // Server events. Most of these events should be forward events, as the
