@@ -88,6 +88,9 @@ module.exports = {
     'operations/:operationID/mergeWith/:otherOperationID': {
         put: operations.merge
     },
+    'operations/:operationID/split': {
+        post: operations.split
+    },
     'operations/:operationID/:file': {
         get: operations.file
     },

@@ -152,3 +152,37 @@ export async function create(req, res) {
         return asyncErr(res, err, 'when creating operation for a bank account');
     }
 }
+
+// Split an operation into sub operations
+export async function split(req, res) {
+    let createdOperations = [];
+    try {
+        // This should be a table
+        let suboperations = req.body.suboperations;
+        let operation = req.preloaded;
+        if (req.body.suboperations && req.body.suboperations.length > 0) {
+            let now = moment().format('YYYY-MM-DDTHH:mm:ss.000Z');
+            for (let suboperation of suboperations) {
+                if (!Operation.isOperation(suboperation)) {
+                    throw new KError('Not an operation', 400);
+                }
+                suboperation.raw = suboperation.title;
+                suboperation.dateImport = now;
+                suboperation.createdByUser = true;
+                let op = await Operation.create(suboperation);
+                createdOperations.push(op);
+            }
+            let opIds = createdOperations.map(oper => oper.id);
+            operation.subOperations = operation.subOperations.concat(opIds) ||
+                                      opIds;
+            await operation.save();
+            res.status(201).send(createdOperations);
+        }
+    } catch (err) {
+        for (let opToDelete of createdOperations) {
+            await opToDelete.delete();
+        }
+        // TODO : Delete 'suboperations'
+        return asyncErr(res, err, 'when splitting an operation');
+    }
+}
