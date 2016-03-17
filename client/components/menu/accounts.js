@@ -5,6 +5,8 @@ import { has } from '../../helpers';
 class AccountListItem extends React.Component {
 
     constructor(props) {
+        has(props, 'accountLabel');
+        has(props, 'accountBalance');
         super(props);
         this.handleClick = this.handleClick.bind(this);
     }
@@ -13,10 +15,16 @@ class AccountListItem extends React.Component {
         Actions.selectAccount(this.props.account);
     }
 
-    computeTotal(operations) {
-        let total = operations
-                        .reduce((a, b) => a + b.amount, this.props.account.initialAmount);
-        return Math.round(total * 100) / 100;
+    componentDidMount() {
+
+    }
+
+    componentWillUnmount() {
+
+    }
+
+    listener() {
+        this.render();
     }
 
     render() {
@@ -24,8 +32,8 @@ class AccountListItem extends React.Component {
         return (
             <li className={ maybeActive }>
                 <span>
-                    <a href="#" onClick={ this.handleClick }>{ this.props.account.title }</a>
-                    ({ this.computeTotal(this.props.account.operations) } €)
+                    <a href="#" onClick={ this.handleClick }>{ this.props.accountLabel }</a>
+                    ({ this.props.accountBalance } €)
                 </span>
             </li>
         );
@@ -40,16 +48,16 @@ class AccountActiveItem extends AccountListItem {
     }
 
     render() {
-        let total = super.computeTotal(this.props.account.operations);
-        let color = total >= 0 ? 'positive' : 'negative';
+        let balance = this.props.accountBalance
+        let color = balance >= 0 ? 'positive' : 'negative';
 
         return (
             <div className="account-details">
                 <div className="account-name">
                     <a href="#" onClick={ this.props.handleClick }>
-                        { this.props.account.title }
+                        { this.props.accountLabel }
                         <span className="amount">
-                            [<span className={ color }>{ total } €</span>]
+                            [<span className={ color }>{ balance } €</span>]
                         </span>
                         <span className="caret"></span>
                     </a>
@@ -89,12 +97,14 @@ export default class AccountListComponent extends React.Component {
         store.on(State.banks, this.listener);
         store.on(State.operations, this.listener);
         store.on(State.accounts, this.listener);
+        store.on(State.settings, this.listener);
     }
 
     componentWillUnmount() {
         store.removeListener(State.banks, this.listener);
         store.removeListener(State.accounts, this.listener);
         store.removeListener(State.operations, this.listener);
+        store.removeListener(State.settings, this.listener);
     }
 
     render() {
@@ -103,8 +113,12 @@ export default class AccountListComponent extends React.Component {
                         .map(account => (
                             <AccountActiveItem
                               key={ account.id }
-                              account={ account }
+                              accountLabel={ account.title }
                               handleClick={ this.toggleDropdown }
+                              accountBalance={ store.getBoolSetting('displayFutureOperations') ?
+                                  account.computeFutureBalance() :
+                                  account.balance
+                              }
                             />
                         )
         );
@@ -112,7 +126,14 @@ export default class AccountListComponent extends React.Component {
         let accounts = this.state.accounts.map(account => {
             let isActive = this.state.active === account.id;
             return (
-                <AccountListItem key={ account.id } account={ account } active={ isActive } />
+                <AccountListItem
+                  key={ account.id } account={ account } active={ isActive }
+                  accountBalance={ store.getBoolSetting('displayFutureOperations') ?
+                      account.computeFutureBalance() :
+                      account.balance
+                  }
+                  accountLabel={ account.title }
+                />
             );
         });
 

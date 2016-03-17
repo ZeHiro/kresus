@@ -195,11 +195,23 @@ store.getCurrentOperations = function() {
     let acc = this.getCurrentAccount();
     if (acc === null)
         return [];
-    return acc.operations.filter(op =>
-        !op.isFuture || store.getBoolSetting('displayFutureOperations')
-    );
+    return store.getOperations(acc);
 };
 
+// [instanceof Operation]
+store.getCurrentFutureOperations = function() {
+    let acc = this.getCurrentAccount();
+    if (acc === null)
+        return [];
+    return acc.futureOperations;
+};
+
+// [instanceof Operation]
+store.getOperations = function(account){
+    return store.getBoolSetting('displayFutureOperations') ?
+        account.futureOperations.concat(account.operations) :
+        account.operations;
+}
 // [instanceof Category]
 store.getCategories = function() {
     return data.categories;
@@ -349,10 +361,16 @@ store.setupKresus = function(cb) {
                 let acc = new Account(accPOD);
                 bank.accounts.set(acc.id, acc);
 
-                acc.operations = getRelatedOperations(acc.accountNumber, world.operations)
+                let allOperations = getRelatedOperations(acc.accountNumber, world.operations)
                                  .map(operationFromPOD(unknownOperationTypeId));
 
+                acc.operations = allOperations.filter(op => !op.isFuture);
+
                 sortOperations(acc.operations);
+
+                acc.setBalance();
+
+                acc.futureOperations = allOperations.filter(op => op.isFuture);
 
                 if (!data.currentAccountId) {
                     data.currentAccountId = acc.id;

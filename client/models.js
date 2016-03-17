@@ -23,6 +23,7 @@ export class Account {
         this.iban          = (maybeHas(arg, 'iban') && arg.iban) || null;
 
         this.operations = [];
+        this.futureOperations = [];
     }
 
     mergeOwnProperties(other) {
@@ -35,6 +36,16 @@ export class Account {
         this.lastChecked   = other.lastChecked;
         this.iban          = other.iban;
         // No need to merge ids, they're the same
+        this.setBalance();
+    }
+
+    setBalance() {
+        this.balance = Math.round(this.operations.reduce((a,b) => a + b.amount, this.initialAmount) * 100) / 100;
+        return this.balance;
+    }
+
+    computeFutureBalance() {
+        return Math.round(this.futureOperations.reduce((a,b) => a + b.amount, this.balance) * 100) / 100;
     }
 }
 
