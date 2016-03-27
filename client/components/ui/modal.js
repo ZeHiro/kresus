@@ -1,4 +1,4 @@
-import { has } from '../../helpers';
+import { has, maybeHas } from '../../helpers';
 
 export default class Modal extends React.Component {
 
@@ -11,10 +11,23 @@ export default class Modal extends React.Component {
     }
 
     render() {
+        let size = ''
+        if (maybeHas(this.props, 'size')) {
+            switch (this.props.size) {
+                case 'large':
+                    size='modal-lg';
+                    break;
+                case 'small':
+                    size='modal-sm';
+                    break;
+                default:
+                    size='';
+            }
+        }
         return (
             <div className="modal fade" id={ this.props.modalId } tabIndex="-1"
               role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div className="modal-dialog">
+                <div className={ `modal-dialog ${size}` }>
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal"

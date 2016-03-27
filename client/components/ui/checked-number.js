@@ -27,9 +27,9 @@ export default class ValidableInputNumber extends React.Component {
 
     showValidity() {
         if (this.state.valid) {
-            return <span className="fa fa-check form-control-feedback" aria-hidden="true"></span>;
+            return <i className="fa fa-check form-control-feedback" aria-hidden="true"></i>;
         }
-        return <span className="fa fa-times form-control-feedback" aria-hidden="true"></span>;
+        return <i className="fa fa-times form-control-feedback" aria-hidden="true"></i>;
     }
 
     render() {

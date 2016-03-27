@@ -211,7 +211,6 @@ export default class OperationsComponent extends React.Component {
                         </table>
                     </div>
                 </div>
-
             </div>
         );
     }

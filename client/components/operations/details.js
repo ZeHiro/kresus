@@ -5,6 +5,7 @@ import { DetailedViewLabel } from './label';
 
 import OperationTypeSelect from '../ui/operation-type-select';
 import CategorySelect from '../ui/category-select';
+import SplitOperationModal from './split-operation-modal';
 
 export function computeAttachmentLink(op) {
     let file = op.binary.fileName || 'file';
@@ -92,8 +93,15 @@ export default class OperationDetails extends React.Component {
                             />
                         </li>
                         { maybeAttachment }
+                        <input type="button" value={ $t('client.operations.split') }
+                          className="btn btn-default pull-right"
+                          data-toggle="modal"
+                          data-target={ `#splitOperationModal${op.id}` }
+                        />
+                                    <SplitOperationModal operation={ op }/>
                     </ul>
                 </td>
+
             </tr>
         );
     }

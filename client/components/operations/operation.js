@@ -85,16 +85,16 @@ export default class Operation extends React.Component {
                         <i className="fa fa-plus-square"></i>
                     </a>
                 </td>
-                <td>{ op.date.toLocaleDateString() }</td>
-                <td>
+                <td className="col-sm-1">{ op.date.toLocaleDateString() }</td>
+                <td className="col-sm-2">
                     <OperationTypeSelect
                       operation={ op }
                       onSelectId={ this.handleSelectType }
                     />
                 </td>
-                <td><OperationListViewLabel operation={ op } link={ link } /></td>
-                <td className="text-right">{ this.props.formatCurrency(op.amount) }</td>
-                <td>
+                <td className="col-sm-6"><OperationListViewLabel operation={ op } link={ link } /></td>
+                <td className="col-sm-1 text-right">{ this.props.formatCurrency(op.amount) }</td>
+                <td className="col-sm-2">
                     <CategorySelect
                       operation={ op }
                       onSelectId={ this.handleSelectCategory }

@@ -89,7 +89,11 @@ export default class DatePicker extends React.Component {
     }
 
     render() {
-        return <input className="form-control" type="text" ref="elem" />;
+        let placeholder= maybeHas(this.props, 'placeholder') ? this.props.placeholder : ''
+        return (
+            <input className="form-control" type="text" ref="elem" 
+            placeholder={ placeholder }/>
+        );
     }
 
 }

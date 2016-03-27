@@ -22,6 +22,7 @@ export default class CategorySelect extends React.Component {
               selectedId={ getThisCategoryId }
               idToLabel={ getCategoryTitle }
               onSelectId={ this.handleSelectId }
+              col={this.props.col}
             />
         );
     }
