@@ -160,9 +160,11 @@ export async function split(req, res) {
         // This should be a table
         let suboperations = req.body;
         let operation = req.preloaded.operation;
+        console.log(suboperations);
         if (suboperations && suboperations.length > 0) {
             let now = moment().format('YYYY-MM-DDTHH:mm:ss.000Z');
             for (let suboperation of suboperations) {
+                console.log(suboperation);
                 if ( !suboperation.hasOwnProperty('amount') ||
                     !suboperation.hasOwnProperty('title')) {
                     throw new KError('Not an operation', 400);

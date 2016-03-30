@@ -94,7 +94,7 @@ export default class OperationDetails extends React.Component {
                         </li>
                         { maybeAttachment }
                         <input type="button" value={ $t('client.operations.split') }
-                          className="btn btn-default pull-right"
+                          className="btn btn-default"
                           data-toggle="modal"
                           data-target={ `#splitOperationModal${op.id}` }
                         />

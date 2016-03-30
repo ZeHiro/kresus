@@ -12,6 +12,14 @@ export default class DatePicker extends React.Component {
         pickerOptions = this.setMaxOrMin(pickerOptions, this.props);
         let input = this.refs.elem.getDOMNode();
         this.pickadate = $(input).pickadate(pickerOptions).pickadate('picker');
+        // Set a default view and select
+        if (maybeHas(this.props, 'defaultDate')) {
+            this.pickadate.set('view', new Date(this.props.defaultDate));
+            this.pickadate.set('select', new Date(this.props.defaultDate));
+        } else {
+            this.pickadate.set('view', new Date());
+            this.pickadate.set('select', new Date());
+        }
         this.pickadate.on('set', value => {
             if (maybeHas(value, 'clear') && this.props.onSelect) {
                 this.props.onSelect(null);
@@ -89,10 +97,17 @@ export default class DatePicker extends React.Component {
     }
 
     render() {
-        let placeholder= maybeHas(this.props, 'placeholder') ? this.props.placeholder : ''
+        let placeholder= maybeHas(this.props, 'placeholder') ? this.props.placeholder : '';
+        let defaultDate;
+        if(maybeHas(this.props, 'defaultDate')) {
+            defaultDate = new Date(this.props.defaultDate);
+            defaultDate = `${defaultDate.getFullYear()}-0${defaultDate.getMonth()}-0${defaultDate.getDate()}`;
+        } else {
+            defaultDate = undefined;
+        }
         return (
-            <input className="form-control" type="text" ref="elem" 
-            placeholder={ placeholder }/>
+            <input className="form-control" type="date" ref="elem"
+               placeholder={ placeholder } data-value={ defaultDate }/>
         );
     }
 

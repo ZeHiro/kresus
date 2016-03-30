@@ -239,3 +239,18 @@ export function updateCategory(id, category) {
         });
     });
 }
+
+export function spliOperation(id, operations) {
+    console.log(operations);
+    return new Promise((accept, reject) => {
+        $.ajax({
+            url: `operations/${id}/split`,
+            type: 'POST',
+            data: $(operations).serializeArray(),
+            processData: false,
+            contentType: 'application/json;charset=UTF-8',
+            success: accept,
+            error: xhrReject(reject)
+        });
+    });
+}

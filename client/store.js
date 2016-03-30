@@ -667,6 +667,22 @@ store.mergeOperations = function(toKeepId, toRemoveId) {
     .catch(genericErrorHandler);
 };
 
+store.splitOperation = function(operationToSplitId, subOperations) {
+    let subOps = {};
+    subOps.subOperations = JSON.stringify(subOperations);
+    backend.spliOperation(operationToSplitId, subOperations).then(
+        createdOperations => {
+            // The operations are created for the active account
+            let account = getCurrentAccount();
+            let unkownTypeId = store.getUnknownOperationType().id;
+            for (let op of createdOperations) {
+                operation = new Operation(op, unkownTypeId);
+                account.operations.push(operation);
+            }
+            sortOperations(account.operations);
+        }).catch(genericErrorHandler);
+}
+
 // CATEGORIES
 store.addCategory = function(category) {
     backend.addCategory(category).then(created => {
@@ -1015,6 +1031,15 @@ export let Actions = {
         });
     },
 
+    splitOperation(operationId, operations) {
+        assert(typeof operationId === 'string', 'splitOperation 1st arg must be a string');
+        flux.dispatch({
+            type: Events.user.splittedOperation,
+            operationId,
+            operations
+        });
+    },
+
     // Settings
     deleteAccount(account) {
         assert(account instanceof Account, 'DeleteAccount expects an Account');
@@ -1291,6 +1316,13 @@ flux.register(action => {
             has(action, 'accountID');
             has(action, 'operation');
             store.createOperationForAccount(action.accountID, action.operation);
+            events.emit(State.operations);
+            break;
+
+        case Events.user.splittedOperation:
+            has(action, 'operationId');
+            has(action, 'operations');
+            store.splitOperation(action.operationId, action.operations);
             events.emit(State.operations);
             break;
 
