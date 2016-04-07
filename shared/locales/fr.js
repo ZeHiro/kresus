@@ -345,7 +345,7 @@ module.exports = {
             close: 'Fermer',
             firstDay: '1',
             format: 'dd mmmm yyyy',
-            formatSubmit: 'yyyy/mm/dd',
+            formatSubmit: 'yyyy-mm-dd',
             labelMonthNext: 'Mois suivant',
             labelMonthPrev: 'Mois précédent',
             labelMonthSelect: 'Sélectionner un mois',

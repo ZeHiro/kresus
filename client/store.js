@@ -673,15 +673,17 @@ store.splitOperation = function(operationToSplitId, subOperations) {
     backend.spliOperation(operationToSplitId, subOperations).then(
         createdOperations => {
             // The operations are created for the active account
-            let account = getCurrentAccount();
+            let account = store.getCurrentAccount();
             let unkownTypeId = store.getUnknownOperationType().id;
             for (let op of createdOperations) {
                 operation = new Operation(op, unkownTypeId);
                 account.operations.push(operation);
             }
-            sortOperations(account.operations);
+            store.sortOperations(account.operations);
         }).catch(genericErrorHandler);
 }
+
+store.set
 
 // CATEGORIES
 store.addCategory = function(category) {

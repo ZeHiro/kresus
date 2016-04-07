@@ -158,7 +158,7 @@ export async function split(req, res) {
     let createdOperations = [];
     try {
         // This should be a table
-        let suboperations = req.body;
+        let suboperations = req.body.subOperations;
         let operation = req.preloaded.operation;
         console.log(suboperations);
         if (suboperations && suboperations.length > 0) {

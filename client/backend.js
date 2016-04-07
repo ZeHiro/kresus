@@ -242,11 +242,13 @@ export function updateCategory(id, category) {
 
 export function spliOperation(id, operations) {
     console.log(operations);
+    let subOperations = {}
+    subOperations.subOperations = operations
     return new Promise((accept, reject) => {
         $.ajax({
             url: `operations/${id}/split`,
             type: 'POST',
-            data: $(operations).serializeArray(),
+            data: JSON.stringify(subOperations),
             processData: false,
             contentType: 'application/json;charset=UTF-8',
             success: accept,
