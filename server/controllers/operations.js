@@ -160,23 +160,36 @@ export async function split(req, res) {
         // This should be a table
         let suboperations = req.body.subOperations;
         let operation = req.preloaded.operation;
-        console.log(suboperations);
         if (suboperations && suboperations.length > 0) {
             let now = moment().format('YYYY-MM-DDTHH:mm:ss.000Z');
             for (let suboperation of suboperations) {
-                console.log(suboperation);
-                if ( !suboperation.hasOwnProperty('amount') ||
-                    !suboperation.hasOwnProperty('title')) {
-                    throw new KError('Not an operation', 400);
+                if (suboperation.id) {
+                    // If the suboperation has an id, we update it
+                    let subop = await Operation.find(suboperation.id);
+                    if (!subop) {
+                        throw new KError('Operation not found', 404);
+                    }
+                    subop.title = suboperation.title;
+                    subop.raw = suboperation.title;
+                    subop.date = suboperation.date;
+                    subop.amount = suboperation.amount;
+                    await subop.save();
+                    createdOperations.push(subop);
+                } else {
+                    if ( !suboperation.hasOwnProperty('amount') ||
+                        !suboperation.hasOwnProperty('title')) {
+                        throw new KError('Not an operation', 400);
+                    }
+                    suboperation.operationTypeID = operation.operationTypeID;
+                    suboperation.bankAccount = operation.bankAccount;
+                    suboperation.raw = suboperation.title;
+                    suboperation.dateImport = now;
+                    suboperation.createdByUser = true;
+                    suboperation.parentOperationId = operation.id
+                    console.log(suboperation);
+                    let op = await Operation.create(suboperation);
+                    createdOperations.push(op);
                 }
-                suboperation.operationTypeID = operation.operationTypeID;
-                suboperation.bankAccount = operation.bankAccount;
-                suboperation.raw = suboperation.title;
-                suboperation.dateImport = now;
-                suboperation.createdByUser = true;
-                console.log(suboperation);
-                let op = await Operation.create(suboperation);
-                createdOperations.push(op);
             }
             let opIds = createdOperations.map(oper => oper.id);
             console.log(opIds);

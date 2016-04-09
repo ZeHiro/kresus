@@ -247,7 +247,7 @@ export function spliOperation(id, operations) {
     return new Promise((accept, reject) => {
         $.ajax({
             url: `operations/${id}/split`,
-            type: 'POST',
+            type: 'PUT',
             data: JSON.stringify(subOperations),
             processData: false,
             contentType: 'application/json;charset=UTF-8',

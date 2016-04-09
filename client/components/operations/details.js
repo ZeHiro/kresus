@@ -98,7 +98,7 @@ export default class OperationDetails extends React.Component {
                           data-toggle="modal"
                           data-target={ `#splitOperationModal${op.id}` }
                         />
-                                    <SplitOperationModal operation={ op }/>
+                                    <SplitOperationModal operation={ op.parentOperationId ? store.getOperationFromId(op.parentOperationId) : op }/>
                     </ul>
                 </td>
 

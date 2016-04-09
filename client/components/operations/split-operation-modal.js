@@ -19,7 +19,7 @@ class SubOpForm extends React.Component {
                 categoryId: NONE_CATEGORY_ID,
                 amount: this.props.amount,
                 title: this.props.label,
-                date: this.props.minDate || ''
+                date: this.props.date || ''
             },
             isAmountOK: false,
             isLabelOK: false
@@ -115,9 +115,9 @@ export default class SplitOperationModal extends React.Component {
     constructor(props) {
         has(props, 'operation');
         super(props);
-        
+        console.log(this.props.operation);
         this.state = { 
-            subOpsNumber: 2,
+            subOpsNumber: Math.max(this.props.operation.subOperationIds.length, 2),
             sumOfAmounts: null
         };
 
@@ -169,11 +169,17 @@ export default class SplitOperationModal extends React.Component {
         let modalId = `splitOperationModal${operationToSplit.id}`;
         let modalTitle = $t('client.split_operations.title');
         let subOps = [];
-        for (let i = 1; i <= this.state.subOpsNumber; i++) {
-            subOps.push(<SubOpForm ref={ `${operationToSplit.id}subOp${i}` } id={ i } key={ `${operationToSplit.id}subOp${i}` } minDate={operationToSplit.date} amount={ i === 1 ? operationToSplit.amount : 0 }
-              label={ operationToSplit.customLabel ? operationToSplit.customLabel : operationToSplit.title } date={operationToSplit.date} checkAmount={ this.handleSumOfAmounts }/>);
+        if (this.props.operation.hasSubOperations) {
+            subOps = this.props.operation.subOperationIds.map(id => store.getOperationFromId(id))
+.map((op, index) => <SubOpForm ref={ op.id } id={ index } key={ op.id } minDate={ operationToSplit.date } amount={ op.amount }
+                  label={ op.customLabel ? op.customLabel : op.title } date={ op.date } checkAmount={ this.handleSumOfAmounts }/>);
+
+        } else {
+            for (let i = 1; i <= this.state.subOpsNumber; i++) {
+                subOps.push(<SubOpForm ref={ `${operationToSplit.id}subOp${i}` } id={ i } key={ `${operationToSplit.id}subOp${i}` } minDate={operationToSplit.date} amount={ i === 1 ? operationToSplit.amount : 0 }
+                  label={ operationToSplit.customLabel ? operationToSplit.customLabel : operationToSplit.title } date={operationToSplit.date} checkAmount={ this.handleSumOfAmounts }/>);
+            }
         }
-        
         let modalBody = (
             <div>
                 <span>{ $t('client.split_operations.text') }</span>

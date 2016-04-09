@@ -18,7 +18,8 @@ let Operation = americano.getModel('bankoperation', {
     operationTypeID: String,
     // internal id
     subOperationIds: [String],
-
+    // internal id
+    parentOperationId: String,
     title: String,
     date: Date,
     amount: Number,

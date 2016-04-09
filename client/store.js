@@ -198,6 +198,12 @@ store.getCurrentOperations = function() {
     return acc.operations;
 };
 
+
+// instanceof Operation
+store.getOperationFromId = function(id) {
+    return store.getCurrentOperations().filter(op => op.id === id);
+};
+
 // [instanceof Category]
 store.getCategories = function() {
     return data.categories;
@@ -676,14 +682,12 @@ store.splitOperation = function(operationToSplitId, subOperations) {
             let account = store.getCurrentAccount();
             let unkownTypeId = store.getUnknownOperationType().id;
             for (let op of createdOperations) {
-                operation = new Operation(op, unkownTypeId);
+                let operation = new Operation(op, unkownTypeId);
                 account.operations.push(operation);
             }
-            store.sortOperations(account.operations);
+            sortOperations(account.operations);
         }).catch(genericErrorHandler);
-}
-
-store.set
+};
 
 // CATEGORIES
 store.addCategory = function(category) {
