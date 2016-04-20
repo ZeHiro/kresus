@@ -87,15 +87,18 @@ class LabelComponent extends React.Component {
     render() {
         if (!this.state.editMode) {
             return (
+
                 <button
                   className="form-control text-left btn-transparent"
                   id={ this.props.operation.id }
                   onClick={ this.handleClickEditMode }>
                     { this.buttonLabel() }
                 </button>
+
             );
         }
         return (
+
             <input className="form-control"
               type="text"
               ref="customlabel"
@@ -104,6 +107,7 @@ class LabelComponent extends React.Component {
               onBlur={ this.handleBlur }
               onKeyUp={ this.handleKeyUp }
             />
+
         );
     }
 }
@@ -143,7 +147,7 @@ export class OperationListViewLabel extends LabelComponent {
     }
 
     render() {
-        if (typeof this.props.link === 'undefined') {
+        if ( !this.props.link ) {
             return super.render();
         }
         return (

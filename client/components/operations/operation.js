@@ -72,11 +72,11 @@ export default class Operation extends React.Component {
             );
         }
 
-        link = (
+        link = link ? (
             <label htmlFor={ op.id } className="input-group-addon box-transparent">
                 { link }
             </label>
-        );
+        ) : '';
 
         return (
             <tr className={ rowClassName }>

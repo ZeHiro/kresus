@@ -159,6 +159,7 @@ module.exports = {
             duplicate_threshold: 'Duplication threshold',
             duplicate_help: 'Two transactions will appear in the Duplicates section if they both happen within this period of time of each other.',
 
+            weboob_warning: 'Weboob is the backend sofware used by Kresus to fetch the operations from your bank website. If everything works, you can ignore these parameters', 
             weboob_auto_update: 'Automatically update Weboob modules',
             weboob_auto_merge_accounts: 'Automatically merge Weboob accounts',
             weboob_enable_debug: 'Enable Weboob debug logging',

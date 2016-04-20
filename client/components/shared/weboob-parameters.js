@@ -81,6 +81,10 @@ export default class WeboobParameters extends React.Component {
                 </div>
 
                 <div className="panel-body">
+                    <div className="alert alert-warning">
+                        <span className="glyphicon glyphicon-exclamation-sign">&nbsp;</span>
+                        { $t('client.settings.weboob_warning') }
+                    </div>
                     <form>
                         <BoolSetting
                           label={ $t('client.settings.weboob_enable_debug') }

@@ -111,7 +111,7 @@ export default class Similarity extends React.Component {
                     </div>
                     <div className="panel-body">
                         <div className="alert alert-info">
-                            <span className="glyphicon glyphicon-exclamation-sign"></span>
+                            <span className="glyphicon glyphicon-exclamation-sign">&nbsp;</span>
                             { $t('client.similarity.help') }
                         </div>
                         { sim }
