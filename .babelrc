@@ -3,7 +3,7 @@
         ["env", { "modules": false }],
         "react",
         "stage-2"
-    ],
+    ].map(function(preset){var label = 'babel-preset'; if(typeof preset === 'string') { label += preset} else {label += preset[0]} return require.resolve(label) } return },
     "env": {
         "tests": {
             "presets": ["env", "react", "stage-2"]
