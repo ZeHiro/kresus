@@ -116,11 +116,7 @@ BankListItemComponent.propTypes = {
     access: PropTypes.object.isRequired,
 
     // Whether the bank is the current bank selected
-    active: PropTypes.bool.isRequired,
-
-    // The location object containing the current path.
-    // Needed to rerender the accounts links on route change
-    location: PropTypes.object.isRequired
+    active: PropTypes.bool.isRequired
 };
 
 const Export = connect((state, props) => {

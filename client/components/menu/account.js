@@ -28,8 +28,8 @@ const AccountListItem = connect(
     let { account, accountId, isSmallScreen, hideMenu } = props;
     let { balance, outstandingSum, formatCurrency } = account;
 
-    let {section, subsection} = useParams()
-    console.log(section, subsection)
+    let { section, subsection } = useParams();
+
     let newPathname;
     switch (section) {
         case 'reports':
