@@ -81,11 +81,7 @@ const Menu = props => {
     const chartsSubsection = URL.sections.sub(params, props.defaultChart);
     return (
         <nav className={props.isHidden ? 'menu-hidden' : ''}>
-           {/* <BankList
-                currentAccountId={currentAccountId}
-                location={props.location}
-                match={props.match}
-           />*/}
+            <BankList currentAccountId={currentAccountId} />
 
             <ul className="sidebar-section-list">
                 <Entry path={URL.reports.url(currentAccountId)} icon="briefcase">

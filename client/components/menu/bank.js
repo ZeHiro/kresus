@@ -61,8 +61,6 @@ class BankListItemComponent extends React.Component {
                 <AccountListItem
                     key={id}
                     accountId={id}
-                    location={this.props.location}
-                    match={this.props.match}
                     currentAccountId={this.props.currentAccountId}
                 />
             ));

@@ -14,8 +14,6 @@ const BankListComponent = props => {
                 key={accessId}
                 accessId={accessId}
                 active={isActive}
-                location={props.location}
-                match={props.match}
                 currentAccountId={currentAccountId}
             />
         );
@@ -29,11 +27,7 @@ BankListComponent.propTypes = {
     accessIds: PropTypes.array.isRequired,
 
     // The id of the current access
-    currentAccessId: PropTypes.string.isRequired,
-
-    // The location object containing the current path.
-    // Needed to rerender the accounts links on route change
-    location: PropTypes.object.isRequired
+    currentAccessId: PropTypes.string.isRequired
 };
 
 const Export = connect((state, oldProps) => {
