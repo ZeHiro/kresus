@@ -11,37 +11,32 @@ import EmailsParameters from './emails';
 import LogsSection from './logs';
 import WeboobParameters from './weboob';
 
-const SettingsComponents = props => {
-    let currentAccountId = URL.settings.accountId(props.match);
+const SettingsComponents = () => {
     return (
         <Switch>
-            <Route
-                path={URL.settings.url('accounts', currentAccountId)}
-                component={BankAccountsList}
-            />
-            <Route
-                path={URL.settings.url('backup', currentAccountId)}
-                component={BackupParameters}
-            />
-            <Route
-                path={URL.settings.url('categories', currentAccountId)}
-                component={CategoryList}
-            />
-            <Route
-                path={URL.settings.url('customization', currentAccountId)}
-                component={CustomizationParameters}
-            />
-            <Route
-                path={URL.settings.url('emails', currentAccountId)}
-                component={EmailsParameters}
-            />
-            <Route path={URL.settings.url('logs', currentAccountId)} component={LogsSection} />
-            <Route
-                path={URL.settings.url('weboob', currentAccountId)}
-                component={WeboobParameters}
-            />
+            <Route path={URL.settings.url('accounts')}>
+                <BankAccountsList />
+            </Route>
+            <Route path={URL.settings.url('backup')}>
+                <BackupParameters />
+            </Route>
+            <Route path={URL.settings.url('categories')}>
+                <CategoryList />
+            </Route>
+            <Route path={URL.settings.url('customization')}>
+                <CustomizationParameters />{' '}
+            </Route>
+            <Route path={URL.settings.url('emails')}>
+                <EmailsParameters />
+            </Route>
+            <Route path={URL.settings.url('logs')}>
+                <LogsSection />
+            </Route>
+            <Route path={URL.settings.url('weboob')}>
+                <WeboobParameters />
+            </Route>
 
-            <Redirect to={URL.settings.url('accounts', currentAccountId)} push={false} />
+            <Redirect to={URL.settings.url('accounts')} push={false} />
         </Switch>
     );
 };

@@ -1,3 +1,5 @@
+import { assert } from './helpers';
+
 // The list of the available sections.
 const SECTIONS = ['about', 'budget', 'categories', 'charts', 'duplicates', 'reports', 'settings'];
 const SETTINGS_SUBSECTIONS = [
@@ -14,79 +16,99 @@ function getCurrentAccountId(match) {
     return match.params.currentAccountId;
 }
 
+const duplicates = {
+    pattern: '/duplicates/:currentAccountId',
+    url(accountId) {
+        return `/duplicates/${accountId}`;
+    },
+    accountId: getCurrentAccountId
+};
+
+const reports = {
+    pattern: '/reports/:currentAccountId',
+    url(accountId) {
+        return `/reports/${accountId}`;
+    },
+    accountId: getCurrentAccountId
+};
+
+const budgets = {
+    pattern: '/budget/:currentAccountId',
+    url(accountId) {
+        return `/budget/${accountId}`;
+    },
+    accountId: getCurrentAccountId
+};
+
+const charts = {
+    pattern: '/charts/:subsection?/:currentAccountId',
+    url(subsection, accountId) {
+        return `/charts/${subsection}/${accountId}`;
+    },
+    accountId: getCurrentAccountId
+};
+
+const settings = {
+    pattern: '/settings/:subsection',
+    url(subsection) {
+        return `/settings/${subsection}`;
+    },
+    accountId: getCurrentAccountId
+};
+
+const about = {
+    pattern: '/about',
+    url() {
+        return '/about';
+    }
+};
+
+const weboobReadme = {
+    pattern: '/weboob-readme',
+    url() {
+        return '/weboob-readme';
+    }
+};
+
+const initialize = {
+    pattern: '/initialize/:subsection?',
+    url(subsection = null) {
+        if (subsection === null) {
+            return '/initialize/';
+        }
+        return `/initialize/${subsection}`;
+    }
+};
+
 const URLs = {
-    duplicates: {
-        pattern: '/duplicates/:currentAccountId',
-        url(accountId) {
-            return `/duplicates/${accountId}`;
-        },
-        accountId: getCurrentAccountId
-    },
-
-    reports: {
-        pattern: '/reports/:currentAccountId',
-        url(accountId) {
-            return `/reports/${accountId}`;
-        },
-        accountId: getCurrentAccountId
-    },
-
-    budgets: {
-        pattern: '/budget/:currentAccountId',
-        url(accountId) {
-            return `/budget/${accountId}`;
-        },
-        accountId: getCurrentAccountId
-    },
-
-    charts: {
-        pattern: '/charts/:subsection?/:currentAccountId',
-        url(subsection, accountId) {
-            return `/charts/${subsection}/${accountId}`;
-        },
-        accountId: getCurrentAccountId
-    },
-
-    settings: {
-        pattern: '/settings/:subsection/:currentAccountId',
-        url(subsection, accountId) {
-            return `/settings/${subsection}/${accountId}`;
-        },
-        accountId: getCurrentAccountId
-    },
-
-    about: {
-        pattern: '/about/:currentAccountId',
-        url(accountId) {
-            return `/about/${accountId}`;
-        }
-    },
-
-    weboobReadme: {
-        pattern: '/weboob-readme',
-        url() {
-            return '/weboob-readme';
-        }
-    },
-
-    initialize: {
-        pattern: '/initialize/:subsection?',
-        url(subsection = null) {
-            if (subsection === null) {
-                return '/initialize/';
-            }
-            return `/initialize/${subsection}`;
-        }
-    },
+    duplicates,
+    reports,
+    budgets,
+    charts,
+    settings,
+    about,
+    weboobReadme,
+    initialize,
 
     sections: {
         pattern: '/:section/:subsection?',
-        genericPattern: '/:section/:subsection?/:currentAccountId',
-        sub(match, section, defaultValue) {
-            let { section: matchSection, subsection: matchSubsection } = match.params;
-            return matchSection === section && typeof matchSubsection !== 'undefined'
-                ? matchSubsection
-                : defaultValue;
+        genericPattern: [
+            duplicates.pattern,
+            reports.pattern,
+            budgets.pattern,
+            charts.pattern,
+            settings.pattern,
+            about.pattern,
+            weboobReadme.pattern,
+            initialize.pattern
+        ],
+        sub(params, defaultValue) {
+            if (params === null) {
+                return defaultValue;
+            }
+
+            let { subsection: paramsSubsection } = params;
+            return typeof paramsSubsection !== 'undefined' ? paramsSubsection : defaultValue;
         },
         title(match) {
             if (!match || !match.params) {
@@ -103,5 +125,19 @@ const URLs = {
         accountId: getCurrentAccountId
     }
 };
+
+function allPatternsInGenericPattern() {
+    for (let [key, obj] of Object.entries(URLs)) {
+        if (key === 'sections') {
+            continue;
+        }
+        if (!URLs.sections.genericPattern.includes(obj.pattern)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+assert(allPatternsInGenericPattern(), 'Missing route pattern in URLs object');
 
 export default URLs;

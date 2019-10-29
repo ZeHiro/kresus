@@ -114,19 +114,7 @@ class BaseApp extends React.Component {
 
         let handleContentClick = this.props.isSmallScreen ? this.props.hideMenu : null;
 
-        let { currentAccountId, initialAccountId, location, currentAccountExists } = this.props;
-
-        // This is to handle the case where the accountId in the URL exists, but does not
-        // match any account (for example the accountId was modified by the user).
-        if (typeof currentAccountId !== 'undefined' && !currentAccountExists) {
-            return (
-                <Redirect
-                    to={location.pathname.replace(currentAccountId, initialAccountId)}
-                    push={false}
-                />
-            );
-        }
-
+        let { currentAccountId, initialAccountId } = this.props;
         return (
             <React.Fragment>
                 <Modal />
@@ -150,14 +138,16 @@ class BaseApp extends React.Component {
                 </header>
 
                 <main>
-                    <Route path={URL.sections.genericPattern} component={Menu} />
+                    <Menu />
                     <div id="content" onClick={handleContentClick}>
                         <Switch>
+                            <Route path={URL.settings.pattern}>
+                                <Settings />
+                            </Route>
                             <Route path={URL.reports.pattern} component={OperationList} />
                             <Route path={URL.budgets.pattern} component={Budget} />
                             <Route path={URL.charts.pattern} component={Charts} />
                             <Route path={URL.duplicates.pattern} component={DuplicatesList} />
-                            <Route path={URL.settings.pattern} component={Settings} />
                             <Route path={URL.about.pattern} component={About} />
                             <Redirect to={URL.reports.url(initialAccountId)} push={false} />
                         </Switch>
