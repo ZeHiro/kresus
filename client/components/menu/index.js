@@ -4,13 +4,13 @@ import { NavLink, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import URL from '../../urls';
-import { translate as $t } from '../../helpers';
 import { get, actions } from '../../store';
 import { findRedundantPairs } from '../duplicates';
 
 import About from './about';
 import BankList from './banks';
 import DisplayIf from '../ui/display-if';
+import TranslatedText from '../ui/translated-text';
 
 const Entry = connect(
     state => ({ isSmallScreen: get.isSmallScreen(state) }),
@@ -54,7 +54,9 @@ const DuplicatesEntry = connect((state, props) => {
     let { currentAccountId, numDuplicates } = props;
     return (
         <Entry path={URL.duplicates.url(currentAccountId)} icon="clone" className="duplicates">
-            <span>{$t('client.menu.duplicates')}</span>
+            <span>
+                <TranslatedText translationKey="client.menu.duplicates" />
+            </span>
             <DisplayIf condition={numDuplicates > 0}>
                 <span className="badge">{numDuplicates}</span>
             </DisplayIf>
@@ -73,13 +75,19 @@ const AccountSubMenu = connect(state => {
         <DisplayIf condition={currentAccountId !== null}>
             <ul className="sidebar-section-list">
                 <Entry path={URL.reports.url(currentAccountId)} icon="briefcase">
-                    <span>{$t('client.menu.reports')}</span>
+                    <span>
+                        <TranslatedText translationKey="client.menu.reports" />
+                    </span>
                 </Entry>
                 <Entry path={URL.budgets.url(currentAccountId)} icon="heartbeat">
-                    <span>{$t('client.menu.budget')}</span>
+                    <span>
+                        <TranslatedText translationKey="client.menu.budget" />
+                    </span>
                 </Entry>
                 <Entry path={URL.charts.url(subsection, currentAccountId)} icon="line-chart">
-                    <span>{$t('client.menu.charts')}</span>
+                    <span>
+                        <TranslatedText translationKey="client.menu.charts" />
+                    </span>
                 </Entry>
                 <DuplicatesEntry currentAccountId={currentAccountId} section={section} />
             </ul>

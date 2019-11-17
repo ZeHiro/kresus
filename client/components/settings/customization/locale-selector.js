@@ -1,22 +1,25 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
-import { get, actions } from '../../../store';
+import { LocaleContext } from '../../ui/translated-text';
 
-class LocaleSelector extends React.Component {
+class LocaleSelector extends React.PureComponent {
+    static contextType = LocaleContext;
+    static defaultProps = {
+        className: '',
+        id: ''
+    };
+
     handleChange = e => {
-        this.props.setLocale(e.target.value);
+        this.context.changeLocale(e.target.value);
     };
 
     render() {
-        let className = `locale-selector ${this.props.className || ''}`;
-        let id = this.props.id || '';
         return (
             <select
-                id={id}
-                className={className}
+                id={this.props.id}
+                className={`locale-selector ${this.props.className}`}
                 onChange={this.handleChange}
-                defaultValue={this.props.currentLocale}>
+                value={this.context.locale}>
                 <option value="fr">Français</option>
                 <option value="en">English</option>
             </select>
@@ -24,15 +27,4 @@ class LocaleSelector extends React.Component {
     }
 }
 
-export default connect(
-    state => {
-        return {
-            currentLocale: get.setting(state, 'locale')
-        };
-    },
-    dispatch => {
-        return {
-            setLocale: locale => actions.setSetting(dispatch, 'locale', locale)
-        };
-    }
-)(LocaleSelector);
+export default LocaleSelector;

@@ -4,11 +4,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { get, actions } from '../../store';
-import { displayLabel, translate as $t } from '../../helpers';
+import { displayLabel } from '../../helpers';
 import URL from '../../urls';
 
 import ColoredAmount from './colored-amount';
 import DisplayIf from '../ui/display-if';
+import TranslatedText from '../ui/translated-text';
 
 const AccountListItem = connect(
     (state, props) => {
@@ -45,7 +46,8 @@ const AccountListItem = connect(
                 <ColoredAmount amount={balance} formatCurrency={formatCurrency} />
                 <DisplayIf condition={outstandingSum !== 0}>
                     &ensp;
-                    {`(${$t('client.menu.outstanding_balance')}`}
+                    {'('}
+                    <TranslatedText translationKey="client.menu.outstanding_balance" />
                     <ColoredAmount amount={outstandingSum} formatCurrency={formatCurrency} />
                     {')'}
                 </DisplayIf>

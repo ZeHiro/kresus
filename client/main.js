@@ -16,7 +16,7 @@ import { ToastContainer } from 'react-toastify';
 
 // Global variables
 import { get, init, rx, actions } from './store';
-import { translate as $t, debug, computeIsSmallScreen } from './helpers';
+import { debug, computeIsSmallScreen } from './helpers';
 import URL from './urls';
 
 // Lazy loader
@@ -43,6 +43,7 @@ import { LoadingMessage, LoadingOverlay } from './components/ui/loading';
 import Modal from './components/ui/modal';
 import ThemeLoaderTag from './components/ui/theme-link';
 import withCurrentAccountId from './components/withCurrentAccountId';
+import TranslatedText, { LocaleProvider } from './components/ui/translated-text';
 
 const RESIZE_THROTTLING = 100;
 
@@ -56,7 +57,9 @@ const Charts = props => (
             return ChartsComp ? (
                 <ChartsComp {...props} />
             ) : (
-                <LoadingMessage message={$t('client.spinner.loading')} />
+                <LoadingMessage
+                    message={<TranslatedText translationKey="client.spinner.loading" />}
+                />
             );
         }}
     </LazyLoader>
@@ -67,8 +70,12 @@ const SectionTitle = () => {
     if (titleKey === null) {
         return null;
     }
-    let title = $t(`client.menu.${titleKey}`);
-    return <span className="section-title">&nbsp;/&nbsp;{title}</span>;
+    return (
+        <span className="section-title">
+            &nbsp;/&nbsp;
+            <TranslatedText translationKey={`client.menu.${titleKey}`} />
+        </span>
+    );
 };
 
 const RedirectIfUnknownAccount = withCurrentAccountId(
@@ -128,14 +135,18 @@ class BaseApp extends React.Component {
                         <span className="fa fa-navicon" />
                     </button>
                     <h1>
-                        <Link to="/">{$t('client.KRESUS')}</Link>
+                        <Link to="/">
+                            <TranslatedText translationKey="client.KRESUS" />
+                        </Link>
                     </h1>
                     <Route path={URL.sections.pattern}>
                         <SectionTitle />
                     </Route>
 
                     <DisplayIf condition={this.props.forcedDemoMode}>
-                        <p className="disable-demo-mode">{$t('client.demo.forced')}</p>
+                        <p className="disable-demo-mode">
+                            <TranslatedText translationKey="client.demo.forced" />
+                        </p>
                     </DisplayIf>
                     <DisplayIf condition={!this.props.forcedDemoMode}>
                         <DemoButton />
@@ -238,34 +249,6 @@ const makeOnLoadHandler = (initialState, resolve, reject) => loaded => {
     }
 };
 
-const TranslatedApp = connect(state => {
-    return {
-        // Force re-rendering when the locale changes.
-        locale: get.setting(state, 'locale')
-    };
-})(() => {
-    return (
-        <ErrorReporter>
-            <Switch>
-                <Route path={[URL.weboobReadme.pattern, URL.initialize.pattern]}>
-                    <DisplayOrRedirectToInitialScreen>
-                        <AccountWizard />
-                    </DisplayOrRedirectToInitialScreen>
-                </Route>
-                <Route path="/" exact={false}>
-                    <DisplayOrRedirectToInitialScreen>
-                        <Kresus />
-                    </DisplayOrRedirectToInitialScreen>
-                </Route>
-                <Redirect from="" to="/" push={false} />
-            </Switch>
-
-            <ToastContainer />
-            <LoadingOverlay />
-        </ErrorReporter>
-    );
-});
-
 export default function runKresus() {
     init()
         .then(initialState => {
@@ -288,7 +271,27 @@ export default function runKresus() {
             ReactDOM.render(
                 <BrowserRouter basename={`${urlPrefix}/#`}>
                     <Provider store={rx}>
-                        <TranslatedApp />
+                        <LocaleProvider locale="en">
+                            <ErrorReporter>
+                                <Switch>
+                                    <Route
+                                        path={[URL.weboobReadme.pattern, URL.initialize.pattern]}>
+                                        <DisplayOrRedirectToInitialScreen>
+                                            <AccountWizard />
+                                        </DisplayOrRedirectToInitialScreen>
+                                    </Route>
+                                    <Route path="/" exact={false}>
+                                        <DisplayOrRedirectToInitialScreen>
+                                            <Kresus />
+                                        </DisplayOrRedirectToInitialScreen>
+                                    </Route>
+                                    <Redirect from="" to="/" push={false} />
+                                </Switch>
+
+                                <ToastContainer />
+                                <LoadingOverlay />
+                            </ErrorReporter>
+                        </LocaleProvider>
                     </Provider>
                 </BrowserRouter>,
                 document.getElementById('app')

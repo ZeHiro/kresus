@@ -2,9 +2,9 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 import URL from '../../urls';
-import { translate as $t } from '../../helpers';
 
 import DisplayIf from '../ui/display-if';
+import TranslatedText from '../ui/translated-text';
 
 class DropdownContent extends React.PureComponent {
     componentDidMount() {
@@ -57,37 +57,37 @@ export default class DropdownMenu extends React.PureComponent {
                                 <li>
                                     <NavLink to={URL.settings.url('categories')}>
                                         <span className="fa fa-list-ul" />
-                                        {$t('client.menu.categories')}
+                                        <TranslatedText translationKey="client.menu.categories" />
                                     </NavLink>
                                 </li>
                                 <li>
                                     <NavLink to={URL.settings.url('accounts')}>
                                         <span className="fa fa-bank" />
-                                        {$t('client.settings.tab_accounts')}
+                                        <TranslatedText translationKey="client.settings.tab_accounts" />
                                     </NavLink>
                                 </li>
                                 <li>
                                     <NavLink to={URL.settings.url('emails')}>
                                         <span className="fa fa-envelope" />
-                                        {$t('client.settings.tab_alerts')}
+                                        <TranslatedText translationKey="client.settings.tab_alerts" />
                                     </NavLink>
                                 </li>
                                 <li>
                                     <NavLink to={URL.settings.url('backup')}>
                                         <span className="fa fa-save" />
-                                        {$t('client.settings.tab_backup')}
+                                        <TranslatedText translationKey="client.settings.tab_backup" />
                                     </NavLink>
                                 </li>
                                 <li>
                                     <NavLink to={URL.settings.url('admin')}>
                                         <span className="fa fa-sliders" />
-                                        {$t('client.settings.tab_admin')}
+                                        <TranslatedText translationKey="client.settings.tab_admin" />
                                     </NavLink>
                                 </li>
                                 <li>
                                     <NavLink to={URL.settings.url('customization')}>
                                         <span className="fa fa-paint-brush" />
-                                        {$t('client.settings.tab_customization')}
+                                        <TranslatedText translationKey="client.settings.tab_customization" />
                                     </NavLink>
                                 </li>
                             </ul>
@@ -95,7 +95,7 @@ export default class DropdownMenu extends React.PureComponent {
                                 <li>
                                     <NavLink to={URL.about.url()}>
                                         <span className="fa fa-question" />
-                                        {$t('client.menu.about')}
+                                        <TranslatedText translationKey="client.menu.about" />
                                     </NavLink>
                                 </li>
                             </ul>

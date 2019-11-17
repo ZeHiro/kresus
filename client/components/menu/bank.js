@@ -3,12 +3,13 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { get } from '../../store';
-import { displayLabel, FETCH_STATUS_SUCCESS, translate as $t } from '../../helpers';
+import { displayLabel, FETCH_STATUS_SUCCESS } from '../../helpers';
 import { get as getErrorCode } from '../../errors';
 
 import AccountListItem from './account';
 import ColoredAmount from './colored-amount';
 import DisplayIf from '../ui/display-if';
+import TranslatedText from '../ui/translated-text';
 
 function fetchStatusToLabel(fetchStatus) {
     let errCode = getErrorCode(fetchStatus);
@@ -22,9 +23,9 @@ function fetchStatusToLabel(fetchStatus) {
         case 'ACTION_NEEDED':
         case 'AUTH_METHOD_NYI':
         case 'CONNECTION_ERROR':
-            return $t(`client.fetch_error.short.${fetchStatus}`);
+            return `client.fetch_error.short.${fetchStatus}`;
         default:
-            return $t('client.fetch_error.short.GENERIC_EXCEPTION');
+            return 'client.fetch_error.short.GENERIC_EXCEPTION';
     }
 }
 
@@ -77,7 +78,9 @@ class BankListItemComponent extends React.Component {
         let { fetchStatus, isBankVendorDeprecated, enabled } = access;
 
         let statusLabel =
-            fetchStatus !== FETCH_STATUS_SUCCESS ? fetchStatusToLabel(fetchStatus) : null;
+            fetchStatus !== FETCH_STATUS_SUCCESS ? (
+                <TranslatedText translationKey={fetchStatusToLabel(fetchStatus)} />
+            ) : null;
 
         return (
             <li
@@ -106,7 +109,9 @@ class BankListItemComponent extends React.Component {
                         </button>
                     </div>
                     <p className="bank-sum">
-                        <span>{$t('client.menu.total')}</span>
+                        <span>
+                            <TranslatedText translationKey="client.menu.total" />
+                        </span>
                         &ensp;
                         {totalElement}
                     </p>

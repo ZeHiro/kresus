@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { translate as $t } from '../../../helpers';
 import { get, actions } from '../../../store';
 
 import LocaleSelector from './locale-selector';
+import TranslatedText from '../../ui/translated-text';
 
 const CustomizationOptions = connect(
     state => {
@@ -30,7 +30,11 @@ const CustomizationOptions = connect(
 
     let themes = null;
     if (props.themes.length < 2) {
-        themes = <p className="alerts warning">{$t('client.settings.customization.no_themes')}</p>;
+        themes = (
+            <p className="alerts warning">
+                <TranslatedText translationKey="client.settings.customization.no_themes" />
+            </p>
+        );
     } else {
         let options = props.themes.map(t => {
             return (
@@ -42,7 +46,7 @@ const CustomizationOptions = connect(
         themes = (
             <p>
                 <label htmlFor="theme-selector">
-                    {$t('client.settings.customization.choose_theme')}
+                    <TranslatedText translationKey="client.settings.customization.choose_theme" />
                 </label>
                 <select
                     id="theme-selector"
@@ -59,7 +63,7 @@ const CustomizationOptions = connect(
         <form className="settings-form settings-container">
             <p>
                 <label htmlFor="locale-selector">
-                    {$t('client.settings.customization.locale')}
+                    <TranslatedText translationKey="client.settings.customization.locale" />
                 </label>
                 <LocaleSelector className="form-element-block" id="locale-selector" />
             </p>
@@ -68,7 +72,7 @@ const CustomizationOptions = connect(
 
             <p>
                 <label htmlFor="discovery-mode">
-                    {$t('client.settings.customization.discovery_label')}
+                    <TranslatedText translationKey="client.settings.customization.discovery_label" />
                 </label>
                 <input
                     type="checkbox"
