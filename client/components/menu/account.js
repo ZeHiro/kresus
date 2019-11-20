@@ -12,9 +12,8 @@ import DisplayIf from '../ui/display-if';
 import TranslatedText from '../ui/translated-text';
 
 const AccountListItem = connect(
-    (state, props) => {
+    state => {
         return {
-            account: get.accountById(state, props.accountId),
             isSmallScreen: get.isSmallScreen(state)
         };
     },
@@ -28,9 +27,7 @@ const AccountListItem = connect(
 )(props => {
     let { pathname } = useLocation();
     let { currentAccountId = null } = useParams();
-    let { account, accountId, isSmallScreen, hideMenu } = props;
-    let { balance, outstandingSum, formatCurrency } = account;
-
+    let { isSmallScreen, accountId, hideMenu } = props;
     let newPathname =
         currentAccountId !== null
             ? pathname.replace(currentAccountId, accountId)
@@ -41,18 +38,32 @@ const AccountListItem = connect(
     return (
         <li key={`account-details-account-list-item-${accountId}`} onClick={handleHideMenu}>
             <NavLink to={newPathname} activeClassName="active">
-                <span>{displayLabel(account)}</span>
-                &ensp;
-                <ColoredAmount amount={balance} formatCurrency={formatCurrency} />
-                <DisplayIf condition={outstandingSum !== 0}>
-                    &ensp;
-                    {'('}
-                    <TranslatedText translationKey="client.menu.outstanding_balance" />
-                    <ColoredAmount amount={outstandingSum} formatCurrency={formatCurrency} />
-                    {')'}
-                </DisplayIf>
+                <AccountElement accountId={accountId} />
             </NavLink>
         </li>
+    );
+});
+
+const AccountElement = connect((state, props) => {
+    return {
+        account: get.accountById(state, props.accountId)
+    };
+})(props => {
+    let { account } = props;
+    let { balance, outstandingSum, formatCurrency } = account;
+    return (
+        <React.Fragment>
+            <span>{displayLabel(account)}</span>
+            &ensp;
+            <ColoredAmount amount={balance} formatCurrency={formatCurrency} />
+            <DisplayIf condition={outstandingSum !== 0}>
+                &ensp;
+                {'('}
+                <TranslatedText translationKey="client.menu.outstanding_balance" />
+                <ColoredAmount amount={outstandingSum} formatCurrency={formatCurrency} />
+                {')'}
+            </DisplayIf>
+        </React.Fragment>
     );
 });
 
